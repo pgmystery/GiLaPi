@@ -24,9 +24,9 @@ export interface AuthState {
 export const authInitialState: AuthState = {
   isLoggedIn: JSON.parse(localStorage.getItem("isLoggedIn") || '{}') || false,
   user: JSON.parse(localStorage.getItem("user") || '{}') || null,
-  clientId: import.meta.env.GITLAB_OAUTH_CLIENT_ID,
-  redirectURI: import.meta.env.GITLAB_OAUTH_REDIRECT_URI,
-  clientSecret: import.meta.env.GITLAB_OAUTH_CLIENT_SECRET,
+  clientId: import.meta.env.VITE_GITLAB_OAUTH_CLIENT_ID,
+  redirectURI: import.meta.env.VITE_GITLAB_OAUTH_REDIRECT_URI,
+  clientSecret: import.meta.env.VITE_GITLAB_OAUTH_CLIENT_SECRET,
   // proxy_url: import.meta.env.GITLAB_OAUTH_PROXY_URL
 }
 
