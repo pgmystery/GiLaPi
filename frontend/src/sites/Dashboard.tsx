@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Box, Button, Container, Paper, Toolbar, Typography } from '@mui/material'
 import NewProjectDialog from '../components/dialog/NewProjectDialog'
 import ProjectList from '../components/list/ProjectList'
+import SearchInput from '../components/input/SearchInput'
 
 
 export default function Dashboard() {
@@ -30,6 +31,9 @@ export default function Dashboard() {
             <Button variant="contained" onClick={handleClickOpen}>Add project</Button>
             <NewProjectDialog open={open} onClose={handleClose} />
           </Box>
+        </Toolbar>
+        <Toolbar>
+          <SearchInput />
         </Toolbar>
         <Box>
           <ProjectList />

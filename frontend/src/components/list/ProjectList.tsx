@@ -1,4 +1,3 @@
-import React from 'react'
 import List from '@mui/material/List'
 import Divider from '@mui/material/Divider'
 import ListItemText from '@mui/material/ListItemText'
@@ -11,7 +10,7 @@ import { Breadcrumbs, Link, ListItemButton } from '@mui/material'
 export default function ProjectList() {
   return (
     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-      <ListItemButton alignItems="center">
+      <ListItemButton alignItems="center" sx={{ paddingLeft: "24px", paddingRight: "24px" }}>
         <ListItemAvatar>
           <Avatar alt="Test" variant="square" src="/static/images/avatar/1.jpg" />
         </ListItemAvatar>
@@ -26,7 +25,7 @@ export default function ProjectList() {
         </ListItemText>
       </ListItemButton>
       <Divider variant="middle" component="li" />
-      <ListItemButton alignItems="center">
+      <ListItemButton alignItems="center" sx={{ paddingLeft: "24px", paddingRight: "24px" }}>
         <ListItemAvatar>
           <Avatar alt="Test2" variant="square" src="/static/images/avatar/1.jpg" />
         </ListItemAvatar>
@@ -41,7 +40,7 @@ export default function ProjectList() {
         </ListItemText>
       </ListItemButton>
       <Divider variant="middle" component="li" />
-      <ListItemButton alignItems="center">
+      <ListItemButton alignItems="center" sx={{ paddingLeft: "24px", paddingRight: "24px" }}>
         <ListItemAvatar>
           <Avatar alt="SCAM" variant="square" src="/static/images/avatar/1.jpg" />
         </ListItemAvatar>
