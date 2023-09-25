@@ -1,10 +1,21 @@
-import { Alert, AlertColor, AlertTitle, Box, Button, Collapse, Container } from '@mui/material'
+import {
+  Alert,
+  AlertColor,
+  AlertTitle,
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Collapse,
+  Container
+} from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../App.tsx'
 import { Navigate, useLocation } from 'react-router-dom'
+import GitlabLogo from '../resources/GitlabLogo.tsx'
 
 
-interface AlertDataType {
+export interface AlertDataType {
   severity?: AlertColor
   title: string
   message: string
@@ -20,6 +31,8 @@ export default function Login() {
   const [alertData, setAlertData] = useState<AlertDataType | null>(null)
   const [showAlert, setShowAlert] = useState<boolean>(false)
   const { state } = useLocation() as LocationType
+  const [loginButtonPressed, setLoginButtonPressed] = useState<boolean>(false)
+
   useEffect(() => {
     if (state?.alert) {
       const { alert } = state
@@ -52,6 +65,19 @@ export default function Login() {
     }
   }
 
+  function showLoading() {
+    if (loginButtonPressed) {
+      return (
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={true}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )
+    }
+  }
+
   return (
     <>
       <Collapse in={showAlert}>
@@ -66,9 +92,19 @@ export default function Login() {
             paddingBottom: '20px',
           }}
         >
-          <Button variant="contained" href={gitlabOAuthURL}>Login with GitLab</Button>
+          <Button
+            variant="contained"
+            href={gitlabOAuthURL}
+            startIcon={<GitlabLogo />}
+            size="large"
+            onClick={() => setLoginButtonPressed(true)}
+            disabled={loginButtonPressed}
+          >
+            Login with GitLab
+          </Button>
         </Box>
       </Container>
+      { showLoading() }
     </>
   )
 }

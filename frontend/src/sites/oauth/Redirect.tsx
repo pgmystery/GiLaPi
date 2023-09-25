@@ -94,7 +94,6 @@ export default function Redirect() {
 
   if (codeData && clientId) {
     return (
-
       <>
         <Container>
           <Box
@@ -105,7 +104,7 @@ export default function Redirect() {
               paddingBottom: '20px',
             }}
           >
-            <Typography variant="h1" gutterBottom>Logging in (please wait)...</Typography>
+            <Typography variant="h3" gutterBottom>Logging in (please wait)...</Typography>
           </Box>
         </Container>
         <Backdrop
