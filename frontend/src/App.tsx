@@ -2,8 +2,10 @@ import { createContext, useReducer } from 'react'
 import './App.css'
 import Dashboard from './sites/Dashboard'
 import { authReducer, authInitialState, AuthContextType } from './store/reducer'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { Navigate, Route, Routes, BrowserRouter, Outlet } from 'react-router-dom'
 import Login from './sites/Login.tsx'
+import Redirect from './sites/oauth/Redirect.tsx'
+import Logout from './sites/Logout.tsx'
 
 
 export const AuthContext = createContext<AuthContextType>({
@@ -12,29 +14,32 @@ export const AuthContext = createContext<AuthContextType>({
 })
 
 
-// https://medium.com/@princewilliroka/how-to-implement-login-with-github-in-a-react-app-bd3d704c64fc
-
-
 function App() {
   const [authState, authDispatch] = useReducer(authReducer, authInitialState)
 
-  const router = createBrowserRouter([
-    {
-      path: '/login',
-      element: <Login />,
-    },
-    {
-      path: '/',
-      element: <Dashboard />,
+  function ProtectedRoute() {
+    if (!authState.isLoggedIn) {
+      return <Navigate to="/login" />
     }
-  ])
+
+    return <Outlet />
+  }
 
   return (
     <AuthContext.Provider value={{
       state: authState,
       dispatch: authDispatch,
     }}>
-      <RouterProvider router={router} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/oauth/redirect" element={<Redirect />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Dashboard />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </AuthContext.Provider>
   )
 }

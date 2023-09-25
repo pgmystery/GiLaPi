@@ -3,43 +3,57 @@ export interface AuthContextType {
   dispatch: React.Dispatch<AuthAction>
 }
 
-enum LoginState {
+export enum LoginState {
   LOGIN,
   LOGOUT,
 }
 
 interface AuthAction {
   type: LoginState
-  payload: AuthState
+  payload?: AuthState
 }
 
 export interface AuthState {
   isLoggedIn: boolean
-  user: string | null
+  user: AuthUser | null
   clientId?: string
   redirectURI?: string
   clientSecret?: string
 }
 
+export type AuthResponse = AuthUser | AuthError
+
+interface AuthUser {
+  access_token: string
+  token_type: string
+  expires_in: number
+  refresh_token: string
+  created_at: number
+}
+
+interface AuthError {
+  error: string
+  error_description: string
+}
+
 export const authInitialState: AuthState = {
-  isLoggedIn: JSON.parse(localStorage.getItem("isLoggedIn") || '{}') || false,
+  isLoggedIn: localStorage.getItem("isLoggedIn") === 'true',
   user: JSON.parse(localStorage.getItem("user") || '{}') || null,
   clientId: import.meta.env.VITE_GITLAB_OAUTH_CLIENT_ID,
   redirectURI: import.meta.env.VITE_GITLAB_OAUTH_REDIRECT_URI,
   clientSecret: import.meta.env.VITE_GITLAB_OAUTH_CLIENT_SECRET,
-  // proxy_url: import.meta.env.GITLAB_OAUTH_PROXY_URL
 }
 
 export function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case LoginState.LOGIN: {
-      localStorage.setItem("isLoggedIn", JSON.stringify(action.payload.isLoggedIn))
-      localStorage.setItem("user", JSON.stringify(action.payload.user))
+      localStorage.setItem("isLoggedIn", action.payload?.isLoggedIn ? 'true' : 'false')
+      localStorage.setItem("user", JSON.stringify(action.payload?.user || '{}'))
 
       return {
         ...state,
-        isLoggedIn: action.payload.isLoggedIn,
-        user: action.payload.user
+        isLoggedIn: action.payload?.isLoggedIn || false,
+        user: action.payload?.user || null
       }
     }
     case LoginState.LOGOUT: {
