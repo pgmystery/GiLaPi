@@ -22,7 +22,7 @@ export default function Login() {
   const { state } = useLocation() as LocationType
   useEffect(() => {
     if (state?.alert) {
-      const alert = state.alert
+      const { alert } = state
 
       setAlertData(alert)
       setShowAlert(true)

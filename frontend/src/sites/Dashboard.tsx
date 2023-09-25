@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Button, Container, Paper, Toolbar, Typography } from '@mui/material'
+import { Box, Button, Toolbar, Typography } from '@mui/material'
 import NewProjectDialog from '../components/dialog/NewProjectDialog'
 import ProjectList from '../components/list/ProjectList'
 import SearchInput from '../components/input/SearchInput'
@@ -17,28 +17,26 @@ export default function Dashboard() {
   }
 
   return (
-    <Container>
-      <Paper>
-        <Toolbar>
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="h1" component="div" sx={{
-              fontSize: '1.75rem',
-            }}>
-              Projects
-            </Typography>
-          </Box>
-          <Box>
-            <Button variant="contained" onClick={handleClickOpen}>Add project</Button>
-            <NewProjectDialog open={open} onClose={handleClose} />
-          </Box>
-        </Toolbar>
-        <Toolbar>
-          <SearchInput />
-        </Toolbar>
-        <Box>
-          <ProjectList />
+    <>
+      <Toolbar>
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="h1" component="div" sx={{
+            fontSize: '1.75rem',
+          }}>
+            Projects
+          </Typography>
         </Box>
-      </Paper>
-    </Container>
+        <Box>
+          <Button variant="contained" onClick={handleClickOpen}>Add project</Button>
+          <NewProjectDialog open={open} onClose={handleClose} />
+        </Box>
+      </Toolbar>
+      <Toolbar>
+        <SearchInput />
+      </Toolbar>
+      <Box>
+        <ProjectList />
+      </Box>
+    </>
   )
 }
