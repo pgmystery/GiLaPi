@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -23,7 +23,9 @@ interface NewProjectDialogProps {
   onClose: ()=>void
 }
 
-export default function NewProjectDialog({ open, onClose }: NewProjectDialogProps) {
+export default function AddProjectDialog({ open, onClose }: NewProjectDialogProps) {
+  const [projects, setProjects] = useState([])
+
   return (
     <Dialog
       open={open}

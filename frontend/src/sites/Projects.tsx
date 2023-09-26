@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { Box, Button, Toolbar, Typography } from '@mui/material'
-import NewProjectDialog from '../components/dialog/NewProjectDialog'
+import AddProjectDialog from '../components/dialog/AddProjectDialog.tsx'
 import ProjectList, { ProjectListProject } from '../components/list/ProjectList'
 import SearchInput from '../components/input/SearchInput'
 import { AuthContext } from '../App.tsx'
@@ -65,7 +65,7 @@ export default function Projects() {
         </Box>
         <Box>
           <Button variant="contained" onClick={handleClickOpen}>Add project</Button>
-          <NewProjectDialog open={open} onClose={handleClose} />
+          <AddProjectDialog open={open} onClose={handleClose} />
         </Box>
       </Toolbar>
       <Toolbar>
