@@ -128,4 +128,11 @@ export default class GitlabFetcher {
 
     return await response.text()
   }
+
+  getAuthorizeURL(clientId: string, redirectURI: string, scope: string[]) {
+    const scopeString = scope.join('+')
+    const url = `${this.gitlabURI}/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectURI}&response_type=code&state=STATE&scope=${scopeString}`
+
+    return url
+  }
 }

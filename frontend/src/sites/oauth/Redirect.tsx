@@ -12,13 +12,13 @@ import GitlabFetcher from '../../libs/GitlabFetcher.ts'
 
 export default function Redirect() {
   const { state, dispatch } = useContext(AuthContext)
-  const {clientId, isLoggedIn} = state
+  const {clientId, isLoggedIn, gitlabURI} = state
   const [searchParams] = useSearchParams()
   const codeData = searchParams.get('code')
   const navigate = useNavigate()
 
   useEffect(() => {
-    const gitlabFetcher = new GitlabFetcher('http://192.168.1.2:8080')
+    const gitlabFetcher = new GitlabFetcher(gitlabURI)
 
     const requestToken = async () => {
       if (codeData && clientId && !isLoggedIn) {
@@ -76,6 +76,7 @@ export default function Redirect() {
           dispatch({
             type: LoginState.LOGIN,
             payload: {
+              gitlabURI,
               user: authUserData,
               isLoggedIn: true
             }
@@ -114,7 +115,7 @@ export default function Redirect() {
     return () => {
       gitlabFetcher.abortController.abort()
     }
-  }, [clientId, codeData, dispatch, isLoggedIn, navigate])
+  }, [clientId, codeData, dispatch, gitlabURI, isLoggedIn, navigate])
 
   if (isLoggedIn) {
     return <Navigate to="/login" replace={true} />

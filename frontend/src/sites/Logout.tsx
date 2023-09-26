@@ -9,7 +9,7 @@ import { AlertDataType } from './Login.tsx'
 
 export default function Logout() {
   const { state, dispatch } = useContext(AuthContext)
-  const { isLoggedIn, clientId, user } = state
+  const { isLoggedIn, clientId, user, gitlabURI } = state
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function Logout() {
 
           try {
             const parameters = `client_id=${clientId}&token=${accessToken}`
-            const response = await fetch(`http://192.168.1.2:8080/oauth/revoke/?${parameters}`, {
+            const response = await fetch(`${gitlabURI}/oauth/revoke/?${parameters}`, {
               method: 'POST',
               signal: abortController.signal
             })

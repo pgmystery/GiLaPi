@@ -13,6 +13,7 @@ import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../App.tsx'
 import { Navigate, useLocation } from 'react-router-dom'
 import GitlabLogo from '../resources/GitlabLogo.tsx'
+import GitlabFetcher from '../libs/GitlabFetcher.ts'
 
 
 export interface AlertDataType {
@@ -42,15 +43,27 @@ export default function Login() {
     }
   }, [state])
 
-  const {clientId, redirectURI, isLoggedIn,} = authState
-  const gitlabScope = 'api+read_user+read_api+read_repository+profile+sudo+write_repository'
+  const {clientId, redirectURI, isLoggedIn, gitlabURI} = authState
 
   if (isLoggedIn) {
     return <Navigate to="/" replace />
   }
 
+  if (!clientId || !redirectURI) {
+    return <Navigate to="/error" />
+  }
+
+  const gitlabFetcher = new GitlabFetcher(gitlabURI)
   // const gitlabOAuthURL = `http://192.168.1.2:8080/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectURI}&response_type=code&state=STATE&scope=${gitlabScope}&code_challenge=CODE_CHALLENGE&code_challenge_method=S256`
-  const gitlabOAuthURL = `http://192.168.1.2:8080/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectURI}&response_type=code&state=STATE&scope=${gitlabScope}`
+  const gitlabOAuthURL = gitlabFetcher.getAuthorizeURL(clientId, redirectURI, [
+    'api',
+    'read_user',
+    'read_api',
+    'read_repository',
+    'profile',
+    'sudo',
+    'write_repository',
+  ])
 
   function getAlert() {
     if (alertData !== null) {
