@@ -7,6 +7,7 @@ import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import ListItemText from '@mui/material/ListItemText'
 import GitlabFetcher from '../../libs/GitlabFetcher.ts'
+import Button from '@mui/material/Button'
 
 
 export default function LoggedInLayout() {
@@ -82,13 +83,18 @@ export default function LoggedInLayout() {
             paddingLeft: '30px',
             paddingRight: '30px',
           }}>
-            <Typography
-              variant="h4"
-              component="div"
-              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+            <Button
+              variant="text"
+              href="/"
+              sx={{
+                color: 'white',
+              }}
             >
-              GiLaPi
-            </Typography>
+              <Typography variant="h4">
+                GiLaPi
+              </Typography>
+            </Button>
+            <Typography sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} ></Typography>
             <IconButton
               size="large"
               aria-label="account of current user"
