@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -25,43 +25,101 @@ const Transition = React.forwardRef(function Transition(
 interface NewProjectDialogProps {
   open: boolean
   onClose: (project?: ProjectListProject)=>void
+  excludeNamespaces?: string[]
 }
 
-export default function AddProjectDialog({ open, onClose }: NewProjectDialogProps) {
+export default function AddProjectDialog({ open, onClose, excludeNamespaces }: NewProjectDialogProps) {
   const { state } = useContext(AuthContext)
   const [searchText, setSearchText] = useState<string>('')
   const [projects, setProjects] = useState<ProjectListProject[]>([])
   const [selectedProject, setSelectedProject] = useState<ProjectListProject | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-  const {gitlabURI} = state
-  const gitlabFetcher = new GitlabFetcher(gitlabURI)
 
-  async function handleSearchTextChange(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
-    const newSearchText = event.target.value
-    setSearchText(newSearchText)
+  useEffect(() => {
+    async function requestProjects(gitlabFetcher: GitlabFetcher, projectsFilter: {search: string}) {
+      try {
+        const projects = await gitlabFetcher.getProjects(projectsFilter)
+        const projectListProjects = projects.reduce<ProjectListProject[]>((previousValue, currentValue) => {
+          const { name, avatar_url: avatar, name_with_namespace: nameWithNamespace } = currentValue
+          const returnProject: ProjectListProject = { name, nameWithNamespace }
 
-    if (newSearchText.length >= 3) {
+          if (avatar) {
+            returnProject.avatar = avatar
+          }
+
+          if (Array.isArray(excludeNamespaces)) {
+            if (!excludeNamespaces.includes(nameWithNamespace)) {
+              return [
+                ...previousValue,
+                returnProject,
+              ]
+            }
+          } else {
+            return [
+              ...previousValue,
+              returnProject,
+            ]
+          }
+
+          return previousValue
+        }, [])
+
+        setProjects(projectListProjects)
+      }
+      catch (e) {
+        setLoading(false)
+      }
+
+      setLoading(false)
+    }
+
+    if (searchText.length >= 3) {
       setLoading(true)
       const {user} = state
 
       if (user) {
         const {access_token: accessToken} = user
+        const { gitlabURI } = state
+        const gitlabFetcher = new GitlabFetcher(gitlabURI)
+        const abortController = gitlabFetcher.newAbortController()
         gitlabFetcher.accessToken = accessToken
 
         const projectsFilter = {
-          search: newSearchText
+          search: searchText
         }
-        const projects = await gitlabFetcher.getProjects(projectsFilter)
-        const projectListProjects = projects.map(({ name, avatar_url: avatar, name_with_namespace: nameWithNamespace }) => ({ name, avatar, nameWithNamespace } as ProjectListProject))
 
-        setProjects(projectListProjects)
+        requestProjects(gitlabFetcher, projectsFilter)
+
+        return () => {
+          setLoading(false)
+
+          abortController.abort()
+        }
       }
-
-      setLoading(false)
     }
     else {
       setProjects([])
     }
+
+    setLoading(false)
+  }, [excludeNamespaces, searchText, state])
+
+  // useEffect(() => {
+  //   console.log('CHECK SELECTEDPROJECT EFFECT')
+  //   console.log(projects)
+  //   console.log(selectedProject)
+  //   if (selectedProject && !projects.some(project => project.nameWithNamespace === selectedProject.nameWithNamespace)) {
+  //     setSelectedProject(null)
+  //   }
+  // }, [projects, selectedProject])
+
+  function handleSearchInputTextChanged(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
+    setSearchText(event.target.value)
+  }
+
+  function handleClose(project?: ProjectListProject) {
+    setSearchText('')
+    onClose(project)
   }
 
   return (
@@ -69,12 +127,12 @@ export default function AddProjectDialog({ open, onClose }: NewProjectDialogProp
       open={open}
       TransitionComponent={Transition}
       keepMounted
-      onClose={() => onClose()}
+      onClose={() => handleClose()}
       aria-describedby="alert-dialog-slide-description"
     >
       <DialogTitle>Select a project to add it into the project-list</DialogTitle>
       <DialogContent>
-        <SearchInput value={searchText} onChange={handleSearchTextChange} />
+        <SearchInput value={searchText} onChange={handleSearchInputTextChanged} />
         <Box>
           <BackdropInside open={loading}>
             <ProjectList projects={projects} select={{
@@ -85,7 +143,7 @@ export default function AddProjectDialog({ open, onClose }: NewProjectDialogProp
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" onClick={() => selectedProject && onClose(selectedProject)} disabled={!selectedProject}>Add Project</Button>
+        <Button variant="contained" onClick={() => selectedProject && handleClose(selectedProject)} disabled={!selectedProject || loading}>Add Project</Button>
       </DialogActions>
     </Dialog>
   )

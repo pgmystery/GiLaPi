@@ -76,7 +76,7 @@ export default function Projects() {
         </Box>
         <Box>
           <Button variant="contained" onClick={handleClickOpen}>Add project</Button>
-          <AddProjectDialog open={open} onClose={handleClose} />
+          <AddProjectDialog open={open} onClose={handleClose} excludeNamespaces={projects.map(project => project.nameWithNamespace)} />
         </Box>
       </Toolbar>
       <Toolbar>

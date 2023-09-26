@@ -74,7 +74,7 @@ export default function Logout() {
         abortController.abort()
       }
     }
-  }, [navigate, isLoggedIn, dispatch, user, clientId])
+  }, [navigate, isLoggedIn, dispatch, user, clientId, gitlabURI])
 
   if (isLoggedIn) {
     return (

@@ -15,6 +15,7 @@ interface ProjectListProps {
 interface ProjectListPropSelectableOne {
   type: 'one'
   onChange: (project: ProjectListProject)=>void
+  // selectOnStart?:
 }
 
 interface ProjectListPropSelectableMultiple {
