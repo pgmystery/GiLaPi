@@ -176,6 +176,8 @@ export interface GitlabFetcherProjectInfo {
   }
 }
 
+type GitlabFetcherFilterType = {[key: string]: string}
+
 interface GitlabFetcherFetchOptions {
   method?: string
   isJSON?: boolean
@@ -232,16 +234,24 @@ export default class GitlabFetcher {
     return result as GitlabFetcherUserInfo | GitlabFetcherErrorData
   }
 
-  async getProjects() {
-    return await this.get('projects') as GitlabFetcherProjectInfo[]
+  async getProjects(filter?: GitlabFetcherFilterType) {
+    return await this.get('projects', filter) as GitlabFetcherProjectInfo[]
   }
 
-  async get(resource: string) {
+  async get(resource: string, filter: GitlabFetcherFilterType = {}) {
     if (!this.accessToken) {
       throw new NoAccessTokenException('AccessToken is required for this request')
     }
 
-    const url = `${this.gitlabURI}/api/v4/${resource}?access_token=${this.accessToken}`
+    let url = `${this.gitlabURI}/api/v4/${resource}?access_token=${this.accessToken}`
+
+    if (filter) {
+      for (const [key, value] of Object.entries(filter)) {
+        if (key && value) {
+          url = `${url}&${key}=${value}`
+        }
+      }
+    }
 
     const result = await this._fetch(url)
 

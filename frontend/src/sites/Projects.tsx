@@ -16,7 +16,7 @@ export default function Projects() {
 
   useEffect(() => {
     async function fetchProjects(gitlabFetcher: GitlabFetcher) {
-      const result = await gitlabFetcher.get('projects') as any[]
+      const result = await gitlabFetcher.getProjects()
 
       const projects = result.map(project => {
         return {
@@ -49,8 +49,10 @@ export default function Projects() {
     setOpen(true)
   }
 
-  const handleClose = () => {
+  const handleClose = (project: ProjectListProject) => {
     setOpen(false)
+
+    console.log(project)
   }
 
   return (
