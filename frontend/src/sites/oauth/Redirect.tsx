@@ -1,9 +1,10 @@
 import { Navigate, redirect, useNavigate, useSearchParams } from 'react-router-dom'
 import { useContext, useEffect } from 'react'
 import { AuthContext } from '../../App.tsx'
-import { AuthResponse, LoginState } from '../../store/reducer.tsx'
+import { AuthUser, LoginState } from '../../store/reducer.tsx'
 import { Backdrop, Box, CircularProgress, Container } from '@mui/material'
 import Typography from '@mui/material/Typography'
+import GitlabFetcher from '../../libs/GitlabFetcher.ts'
 
 
 // client_id=APP_ID&code=RETURNED_CODE&grant_type=authorization_code&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER
@@ -17,45 +18,72 @@ export default function Redirect() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const abortController = new AbortController()
+    const gitlabFetcher = new GitlabFetcher('http://192.168.1.2:8080')
 
     const requestToken = async () => {
       if (codeData && clientId && !isLoggedIn) {
-        const gitlabURL = `http://192.168.1.2:8080/oauth/token/?client_id=${clientId}&code=${codeData}&grant_type=authorization_code&redirect_uri=http://localhost:3000/oauth/redirect`
+
+        // const gitlabURL = `http://192.168.1.2:8080/oauth/token/?client_id=${clientId}&code=${codeData}&grant_type=authorization_code&redirect_uri=http://localhost:3000/oauth/redirect`
         // const gitlabURL = `http://192.168.1.2:8080/oauth/token/?client_id=${clientId}&code=${codeData}&grant_type=authorization_code&code_verifier=CODE_VERIFIER&redirect_uri=http://localhost:3000/oauth/redirect`
         // const gitlabURL = `http://192.168.1.2:8080/oauth/token/?client_id=${clientId}&code=${codeData}&grant_type=refresh_token&code_verifier=CODE_VERIFIER&redirect_uri=http://localhost:3000/oauth/redirect`
 
         try {
-          const response = await fetch(gitlabURL, {
-            method: "POST",
-            signal: abortController.signal,
-          })
-          const data = await response.json() as AuthResponse
+          const accessTokenData = await gitlabFetcher.requestAccessToken(
+            clientId,
+            codeData,
+            'http://localhost:3000/oauth/redirect'
+          )
 
-          if ('error' in data) {
+          if ('error' in accessTokenData) {
             navigate('/login', {
               state: {
                 alert: {
                   severity: 'error',
-                  title: data.error,
-                  message: data.error_description,
+                  title: accessTokenData.error,
+                  message: accessTokenData.error_description,
                 },
               }
             })
+
+            return
           }
-          else {
-            dispatch({
-              type: LoginState.LOGIN,
-              payload: {
-                user: data,
-                isLoggedIn: true
+
+          const userData = await gitlabFetcher.getUserInfo()
+
+          if ('error' in userData) {
+            navigate('/login', {
+              state: {
+                alert: {
+                  severity: 'error',
+                  title: userData.error,
+                  message: userData.error_description,
+                },
               }
             })
+
+            return
           }
+
+          const { username, name, avatar_url } = userData
+
+          const authUserData: AuthUser = {
+            ...accessTokenData,
+            username,
+            name,
+            avatar_url,
+          }
+
+          dispatch({
+            type: LoginState.LOGIN,
+            payload: {
+              user: authUserData,
+              isLoggedIn: true
+            }
+          })
         }
         catch (e) {
           console.log('ERROR')
-          console.log(abortController.signal.aborted)
+          console.log(gitlabFetcher.abortController.signal.aborted)
           console.log(e)
 
           const alert = {
@@ -84,7 +112,7 @@ export default function Redirect() {
     requestToken()
 
     return () => {
-      abortController.abort()
+      gitlabFetcher.abortController.abort()
     }
   }, [clientId, codeData, dispatch, isLoggedIn, navigate])
 

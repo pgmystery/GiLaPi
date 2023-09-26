@@ -23,12 +23,15 @@ export interface AuthState {
 
 export type AuthResponse = AuthUser | AuthError
 
-interface AuthUser {
+export interface AuthUser {
   access_token: string
   token_type: string
   expires_in: number
   refresh_token: string
   created_at: number
+  username: string
+  name: string
+  avatar_url: string
 }
 
 interface AuthError {

@@ -12,20 +12,20 @@ export default function Logout() {
   const { isLoggedIn, clientId, user } = state
   const navigate = useNavigate()
 
-  function sendLogout(logoutAlert: AlertDataType) {
-    dispatch({
-      type: LoginState.LOGOUT,
-    })
-
-    navigate('/login', {
-      replace: true,
-      state: {
-        alert: logoutAlert
-      },
-    })
-  }
-
   useEffect(() => {
+    function sendLogout(logoutAlert: AlertDataType) {
+      dispatch({
+        type: LoginState.LOGOUT,
+      })
+
+      navigate('/login', {
+        replace: true,
+        state: {
+          alert: logoutAlert
+        },
+      })
+    }
+
     if (isLoggedIn) {
       const abortController = new AbortController()
 
