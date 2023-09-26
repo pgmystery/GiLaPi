@@ -91,7 +91,6 @@ export default function ProjectList({ projects, select }: ProjectListProps) {
                   onChange={handleSelectClick}
                   tabIndex={-1}
                   disableRipple
-                  // inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
             )

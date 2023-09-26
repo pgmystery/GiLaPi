@@ -88,6 +88,7 @@ export default function LoggedInLayout() {
               href="/"
               sx={{
                 color: 'white',
+                textTransform: 'none',
               }}
             >
               <Typography variant="h4">
