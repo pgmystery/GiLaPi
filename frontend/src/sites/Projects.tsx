@@ -48,17 +48,20 @@ export default function Projects() {
     setOpen(true)
   }
 
-  const handleClose = (project: ProjectListProject) => {
+  const handleClose = (project?: ProjectListProject) => {
     setOpen(false)
 
-    if (!projects.includes(project)) {
-      setProjects([
-        ...projects,
-        project,
-      ])
-    }
+    if (project) {
+      if (!projects.includes(project)) {
+        setProjects([
+          ...projects,
+          project,
+        ])
+      }
 
-    console.log(project)
+      console.log('ADDING PROJECT')
+      console.log(project)
+    }
   }
 
   return (

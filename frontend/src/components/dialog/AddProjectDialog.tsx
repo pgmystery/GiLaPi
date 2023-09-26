@@ -11,6 +11,7 @@ import SearchInput from '../input/SearchInput.tsx'
 import { AuthContext } from '../../App.tsx'
 import GitlabFetcher from '../../libs/GitlabFetcher.ts'
 import { Box } from '@mui/material'
+import BackdropInside from '../utils/BackdropInside.tsx'
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -23,7 +24,7 @@ const Transition = React.forwardRef(function Transition(
 
 interface NewProjectDialogProps {
   open: boolean
-  onClose: (project: ProjectListProject)=>void
+  onClose: (project?: ProjectListProject)=>void
 }
 
 export default function AddProjectDialog({ open, onClose }: NewProjectDialogProps) {
@@ -31,6 +32,7 @@ export default function AddProjectDialog({ open, onClose }: NewProjectDialogProp
   const [searchText, setSearchText] = useState<string>('')
   const [projects, setProjects] = useState<ProjectListProject[]>([])
   const [selectedProject, setSelectedProject] = useState<ProjectListProject | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
   const {gitlabURI} = state
   const gitlabFetcher = new GitlabFetcher(gitlabURI)
 
@@ -39,7 +41,9 @@ export default function AddProjectDialog({ open, onClose }: NewProjectDialogProp
     setSearchText(newSearchText)
 
     if (newSearchText.length >= 3) {
+      setLoading(true)
       const {user} = state
+
       if (user) {
         const {access_token: accessToken} = user
         gitlabFetcher.accessToken = accessToken
@@ -48,11 +52,12 @@ export default function AddProjectDialog({ open, onClose }: NewProjectDialogProp
           search: newSearchText
         }
         const projects = await gitlabFetcher.getProjects(projectsFilter)
-        console.log(projects)
         const projectListProjects = projects.map(({ name, avatar_url: avatar, name_with_namespace: nameWithNamespace }) => ({ name, avatar, nameWithNamespace } as ProjectListProject))
 
         setProjects(projectListProjects)
       }
+
+      setLoading(false)
     }
     else {
       setProjects([])
@@ -64,17 +69,19 @@ export default function AddProjectDialog({ open, onClose }: NewProjectDialogProp
       open={open}
       TransitionComponent={Transition}
       keepMounted
-      onClose={onClose}
+      onClose={() => onClose()}
       aria-describedby="alert-dialog-slide-description"
     >
       <DialogTitle>Select a project to add it into the project-list</DialogTitle>
       <DialogContent>
         <SearchInput value={searchText} onChange={handleSearchTextChange} />
         <Box>
-          <ProjectList projects={projects} select={{
-            type: 'one',
-            onChange: project => setSelectedProject(project)
-          }} />
+          <BackdropInside open={loading}>
+            <ProjectList projects={projects} select={{
+              type: 'one',
+              onChange: project => setSelectedProject(project)
+            }} />
+          </BackdropInside>
         </Box>
       </DialogContent>
       <DialogActions>
