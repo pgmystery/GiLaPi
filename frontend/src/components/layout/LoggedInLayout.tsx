@@ -6,13 +6,14 @@ import Typography from '@mui/material/Typography'
 import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import ListItemText from '@mui/material/ListItemText'
+import GitlabFetcher from '../../libs/GitlabFetcher.ts'
 
 
 export default function LoggedInLayout() {
   const { state } = useContext(AuthContext)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const navigate = useNavigate()
-  const { user } = state
+  const { user, gitlabURI } = state
 
   if (!state.isLoggedIn) {
     return <Navigate to="/login" replace />
@@ -33,31 +34,37 @@ export default function LoggedInLayout() {
   async function handleProfileInfoClick() {
     const { user } = state
 
-    if (user) {
-      const { access_token: accessToken } = user
+    if (!user) return
 
-      const parameters = `access_token=${accessToken}`
-      const response = await fetch(`http://192.168.1.2:8080/api/v4/user?${parameters}`, {
-      // const response = await fetch(`http://192.168.1.2:8080/oauth/token/info?${parameters}`, {
-      // const response = await fetch(`http://192.168.1.2:8080/oauth/userinfo?${parameters}`, {
-      // const response = await fetch(`http://192.168.1.2:8080/oauth/userinfo`, {
-        // method: 'POST',
-        method: 'GET',
-        // withCredentials: true,
-        // credentials: 'include',
-        // signal: abortController.signal,
-        // mode: 'no-cors',
-        // headers: {
-        //   Authorization: `${tokenType} ${accessToken}`,
-        //   Accept: 'application/json',
-        //   'Content-Type': 'application/json'
-        // }
-      })
-      const result = await response.text()
-      // const result = await response.json()
+    const { access_token: accessToken } = user
 
-      console.log(result)
-    }
+    const gitlabFetcher = new GitlabFetcher(gitlabURI, accessToken)
+
+    const result = await gitlabFetcher.get('projects')
+
+    // const { access_token: accessToken } = user
+    //
+    // const parameters = `access_token=${accessToken}`
+    // const response = await fetch(`http://192.168.1.2:8080/api/v4/user?${parameters}`, {
+    // // const response = await fetch(`http://192.168.1.2:8080/oauth/token/info?${parameters}`, {
+    // // const response = await fetch(`http://192.168.1.2:8080/oauth/userinfo?${parameters}`, {
+    // // const response = await fetch(`http://192.168.1.2:8080/oauth/userinfo`, {
+    //   // method: 'POST',
+    //   method: 'GET',
+    //   // withCredentials: true,
+    //   // credentials: 'include',
+    //   // signal: abortController.signal,
+    //   // mode: 'no-cors',
+    //   // headers: {
+    //   //   Authorization: `${tokenType} ${accessToken}`,
+    //   //   Accept: 'application/json',
+    //   //   'Content-Type': 'application/json'
+    //   // }
+    // })
+    // const result = await response.text()
+    // // const result = await response.json()
+
+    console.log(result)
 
     handleProfileMenuClose()
   }
@@ -110,7 +117,7 @@ export default function LoggedInLayout() {
               open={Boolean(anchorEl)}
               onClose={handleProfileMenuClose}
             >
-              <Link href={`http://192.168.1.2:8080/${username}`} underline="none" color="inherit" target="_blank" rel="noopener">
+              <Link href={`${gitlabURI}/${username}`} underline="none" color="inherit" target="_blank" rel="noopener">
                 <MenuItem>
                   <ListItemText
                     primary={ name }

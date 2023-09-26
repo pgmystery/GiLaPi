@@ -1,6 +1,6 @@
 import { createContext, useReducer } from 'react'
 import './App.css'
-import Dashboard from './sites/Dashboard'
+import Projects from './sites/Projects.tsx'
 import { authReducer, authInitialState, AuthContextType } from './store/reducer'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import Login from './sites/Login.tsx'
@@ -29,7 +29,7 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           <Route path="/oauth/redirect" element={<Redirect />} />
           <Route element={<LoggedInLayout />}>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<Projects />} />
           </Route>
         </Routes>
       </BrowserRouter>

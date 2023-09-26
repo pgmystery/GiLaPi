@@ -110,6 +110,18 @@ export default class GitlabFetcher {
     return result as GitlabFetcherUserInfo | GitlabFetcherErrorData
   }
 
+  async get(resource: string) {
+    if (!this.accessToken) {
+      throw new NoAccessTokenException('AccessToken is required for this request')
+    }
+
+    const url = `${this.gitlabURI}/api/v4/${resource}?access_token=${this.accessToken}`
+
+    const result = await this._fetch(url)
+
+    return result
+  }
+
   private async _fetch(url: string, options: GitlabFetcherFetchOptions = defaultFetchOptions) {
     options = {
       ...defaultFetchOptions,
