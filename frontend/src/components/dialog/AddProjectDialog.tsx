@@ -6,12 +6,12 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import Slide from '@mui/material/Slide'
 import { TransitionProps } from '@mui/material/transitions'
-import ProjectList, { ProjectListProject } from '../list/ProjectList.tsx'
 import SearchInput from '../input/SearchInput.tsx'
 import { AuthContext } from '../../App.tsx'
 import GitlabFetcher from '../../libs/GitlabFetcher.ts'
 import { Box } from '@mui/material'
 import BackdropInside from '../utils/BackdropInside.tsx'
+import ProjectList, { ProjectListProject } from '../list/ProjectList/ProjectList.tsx'
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -103,15 +103,6 @@ export default function AddProjectDialog({ open, onClose, excludeNamespaces }: N
 
     setLoading(false)
   }, [excludeNamespaces, searchText, state])
-
-  // useEffect(() => {
-  //   console.log('CHECK SELECTEDPROJECT EFFECT')
-  //   console.log(projects)
-  //   console.log(selectedProject)
-  //   if (selectedProject && !projects.some(project => project.nameWithNamespace === selectedProject.nameWithNamespace)) {
-  //     setSelectedProject(null)
-  //   }
-  // }, [projects, selectedProject])
 
   function handleSearchInputTextChanged(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
     setSearchText(event.target.value)
