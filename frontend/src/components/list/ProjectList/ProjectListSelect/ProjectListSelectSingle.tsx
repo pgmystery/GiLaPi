@@ -44,10 +44,6 @@ export default function ProjectListSelectSingle({ projects, onChange }: ProjectL
     const { nameWithNamespace } = project
     const projectIsSelectedProject = JSON.stringify(selectedProject) === JSON.stringify(nameWithNamespace)
 
-    // if (!foundSelectedProject && currentProjectIsSelectedProject) {
-    //   foundSelectedProject = currentProjectIsSelectedProject
-    // }
-
     return (
       <ListItemIcon>
         <Radio

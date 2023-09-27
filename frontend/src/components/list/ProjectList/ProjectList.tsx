@@ -1,6 +1,8 @@
 import List from '@mui/material/List'
 import ProjectListSelectSingle, { ProjectListSelectSingleProps } from './ProjectListSelect/ProjectListSelectSingle.tsx'
-import ProjectListSelectMultiple from './ProjectListSelect/ProjectListSelectMultiple.tsx'
+import ProjectListSelectMultiple, {
+  ProjectListSelectMultipleProps
+} from './ProjectListSelect/ProjectListSelectMultiple.tsx'
 import ProjectListItems from './ProjectListItems.tsx'
 
 export interface ProjectListProps {
@@ -13,9 +15,8 @@ interface ProjectListPropSelectableOne extends Pick<ProjectListSelectSingleProps
   type: 'one'
 }
 
-interface ProjectListPropSelectableMultiple {
+interface ProjectListPropSelectableMultiple extends Pick<ProjectListSelectMultipleProps, 'onChange'> {
   type: 'multiple'
-  onChange: (projects: ProjectListProject[])=>void
 }
 
 export interface ProjectListProject {
@@ -131,7 +132,7 @@ export default function ProjectList({ projects, select, onClick }: ProjectListPr
       case 'one':
         return <ProjectListSelectSingle projects={projects} onChange={select.onChange} />
       case 'multiple':
-        return <ProjectListSelectMultiple />
+        return <ProjectListSelectMultiple projects={projects} onChange={select.onChange} />
       default:
         return <ProjectListItems projects={projects} onClick={onClick}/>
     }
