@@ -6,12 +6,12 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import Slide from '@mui/material/Slide'
 import { TransitionProps } from '@mui/material/transitions'
-import ProjectList, { ProjectListProject } from '../list/ProjectList.tsx'
 import SearchInput from '../input/SearchInput.tsx'
 import { AuthContext } from '../../App.tsx'
 import GitlabFetcher from '../../libs/GitlabFetcher.ts'
 import { Box } from '@mui/material'
 import BackdropInside from '../utils/BackdropInside.tsx'
+import ProjectList, { ProjectListProject } from '../list/ProjectList/ProjectList.tsx'
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
