@@ -23,7 +23,7 @@ export default function ProjectListSelectSingle({ projects, onChange }: ProjectL
         }
       }
     }
-  }, [selectedProject, projects, onChange])
+  }, [projects])
 
   function handleItemClick(project: ProjectListProject | null) {
     if (project === null) {

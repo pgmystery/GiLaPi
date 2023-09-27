@@ -104,15 +104,6 @@ export default function AddProjectDialog({ open, onClose, excludeNamespaces }: N
     setLoading(false)
   }, [excludeNamespaces, searchText, state])
 
-  // useEffect(() => {
-  //   console.log('CHECK SELECTEDPROJECT EFFECT')
-  //   console.log(projects)
-  //   console.log(selectedProject)
-  //   if (selectedProject && !projects.some(project => project.nameWithNamespace === selectedProject.nameWithNamespace)) {
-  //     setSelectedProject(null)
-  //   }
-  // }, [projects, selectedProject])
-
   function handleSearchInputTextChanged(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
     setSearchText(event.target.value)
   }
