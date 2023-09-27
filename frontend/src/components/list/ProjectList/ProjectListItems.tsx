@@ -52,9 +52,6 @@ export default function ProjectListItems({ projects, onClick, createChildren }: 
 }
 
 export function ProjectListItem({ namespaces, children, avatar, onClick }: ProjectListItemProps) {
-  console.log('ProjectListItem')
-  console.log(avatar)
-
   return (
     <ListItemButton alignItems="center" sx={{ paddingLeft: "24px", paddingRight: "24px" }} onClick={onClick}>
       <ListItemAvatar>
