@@ -45,6 +45,11 @@ export default function Projects() {
     }
   }
 
+  function handleProjectListItemClick(project: ProjectListProject) {
+    console.log('handleProjectListItemClick')
+    console.log(project)
+  }
+
   return (
     <>
       <Toolbar>
@@ -64,7 +69,7 @@ export default function Projects() {
         <SearchInput />
       </Toolbar>
       <Box>
-        <ProjectListDelete projects={projects} onClick={handleProjectDeleteClick}/>
+        <ProjectListDelete projects={projects} onDeleteClick={handleProjectDeleteClick} onClick={handleProjectListItemClick} />
         <Dialog
           open={confirmDeleteProjectOpen !== null}
           aria-labelledby="alert-dialog-title"
