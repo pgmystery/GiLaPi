@@ -238,6 +238,10 @@ export default class GitlabFetcher {
     return await this.get('projects', filter) as GitlabFetcherProjectInfo[]
   }
 
+  async getProjectById(id: number) {
+    return await this.get(`projects/${id}`) as GitlabFetcherProjectInfo
+  }
+
   async get(resource: string, filter: GitlabFetcherFilterType = {}) {
     if (!this.accessToken) {
       throw new NoAccessTokenException('AccessToken is required for this request')

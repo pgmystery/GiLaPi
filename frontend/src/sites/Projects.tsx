@@ -8,12 +8,14 @@ import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
+import { useNavigate } from 'react-router-dom'
 
 
 export default function Projects() {
   const [projects, setProjects] = useState<ProjectListProject[]>([])
   const [addProjectDialogOpen, setAddProjectDialogOpen] = useState(false)
   const [confirmDeleteProjectOpen, setConfirmDeleteProjectOpen] = useState<ProjectListProject | null>(null)
+  const navigate = useNavigate()
 
   const handleClickOpen = () => {
     setAddProjectDialogOpen(true)
@@ -48,6 +50,8 @@ export default function Projects() {
   function handleProjectListItemClick(project: ProjectListProject) {
     console.log('handleProjectListItemClick')
     console.log(project)
+
+    navigate(`/project/${project.id}`)
   }
 
   return (
