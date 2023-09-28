@@ -120,13 +120,13 @@ export default function AddProjectDialog({ open, onClose, excludeNamespaces }: N
     <Dialog
       open={open}
       TransitionComponent={Transition}
-      keepMounted
       onClose={() => handleClose()}
       aria-describedby="alert-dialog-slide-description"
+      disableRestoreFocus
     >
       <DialogTitle>Select a project to add it into the project-list</DialogTitle>
       <DialogContent>
-        <SearchInput value={searchText} onChange={handleSearchInputTextChanged} />
+        <SearchInput value={searchText} onChange={handleSearchInputTextChanged} autoFocus />
         <Box>
           <BackdropInside open={loading}>
             <ProjectList projects={projects} select={{

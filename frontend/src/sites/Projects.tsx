@@ -49,9 +49,6 @@ export default function Projects() {
   }
 
   function handleProjectListItemClick(project: ProjectListProject) {
-    console.log('handleProjectListItemClick')
-    console.log(project)
-
     setShowLoadingSpinner(true)
     navigate(`/project/${project.id}`)
   }
@@ -80,6 +77,7 @@ export default function Projects() {
           open={confirmDeleteProjectOpen !== null}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          disableRestoreFocus
         >
           <DialogTitle id="alert-dialog-title">
             Confirm delete project from list

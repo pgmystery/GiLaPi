@@ -5,6 +5,7 @@ import SearchIcon from '@mui/icons-material/Search'
 interface SearchInputProps {
   value?: string
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>)=>void
+  autoFocus?: boolean
 }
 
 const Search = styled('div')(({ theme }) => ({
@@ -50,7 +51,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-export default function SearchInput({ value, onChange }: SearchInputProps) {
+export default function SearchInput({ value, onChange, autoFocus }: SearchInputProps) {
   return (
     <Search>
       <SearchIconWrapper>
@@ -61,6 +62,7 @@ export default function SearchInput({ value, onChange }: SearchInputProps) {
         onChange={onChange}
         placeholder="Search…"
         inputProps={{ 'aria-label': 'search' }}
+        autoFocus={autoFocus}
       />
     </Search>
   )
