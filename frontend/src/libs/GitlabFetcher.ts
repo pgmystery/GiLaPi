@@ -12,45 +12,45 @@ export interface GitlabFetcherAccessTokenData {
 }
 
 export interface GitlabFetcherUserInfo {
-  id: number,
-  username: string,
-  name: string,
-  state: string,
-  avatar_url: string,
-  web_url: string,
-  created_at: string,
-  bio: string,
-  location: string,
-  public_email: string | null,
-  skype: string,
-  linkedin: string,
-  twitter: string,
-  discord: string,
-  website_url: string,
-  organization: string,
-  job_title: string,
-  pronouns: string | null,
-  bot: boolean,
-  work_information: string | null,
-  local_time: string | null,
-  last_sign_in_at: string,
-  confirmed_at: string,
-  last_activity_on: string,
-  email: string,
-  theme_id: number,
-  color_scheme_id: number,
-  projects_limit: number,
-  current_sign_in_at: string,
-  identities: string[],
-  can_create_group: boolean,
-  can_create_project: boolean,
-  two_factor_enabled: boolean,
-  external: boolean,
-  private_profile: boolean,
-  commit_email: string,
-  is_admin: boolean,
-  note: string | null,
-  namespace_id: number,
+  id: number
+  username: string
+  name: string
+  state: string
+  avatar_url: string
+  web_url: string
+  created_at: string
+  bio: string
+  location: string
+  public_email: string | null
+  skype: string
+  linkedin: string
+  twitter: string
+  discord: string
+  website_url: string
+  organization: string
+  job_title: string
+  pronouns: string | null
+  bot: boolean
+  work_information: string | null
+  local_time: string | null
+  last_sign_in_at: string
+  confirmed_at: string
+  last_activity_on: string
+  email: string
+  theme_id: number
+  color_scheme_id: number
+  projects_limit: number
+  current_sign_in_at: string
+  identities: string[]
+  can_create_group: boolean
+  can_create_project: boolean
+  two_factor_enabled: boolean
+  external: boolean
+  private_profile: boolean
+  commit_email: string
+  is_admin: boolean
+  note: string | null
+  namespace_id: number
   created_by: string | null
 }
 
@@ -82,7 +82,7 @@ export interface GitlabFetcherProjectInfo {
     parent_id: number
     avatar_url: string | null
     web_url: string
-  },
+  }
   packages_enabled: boolean
   empty_repo: boolean
   archived: boolean
@@ -97,97 +97,229 @@ export interface GitlabFetcherProjectInfo {
     name_regex_keep: string | null
     next_run_at: string
   }
-  issues_enabled: boolean,
-  merge_requests_enabled: boolean,
-  wiki_enabled: boolean,
-  jobs_enabled: boolean,
-  snippets_enabled: boolean,
-  container_registry_enabled: boolean,
-  service_desk_enabled: boolean,
-  service_desk_address: string | null,
-  can_create_merge_request_in: boolean,
-  issues_access_level: string,
-  repository_access_level: string,
-  merge_requests_access_level: string,
-  forking_access_level: string,
-  wiki_access_level: string,
-  builds_access_level: string,
-  snippets_access_level: string,
-  pages_access_level: string,
-  analytics_access_level: string,
-  container_registry_access_level: string,
-  security_and_compliance_access_level: string,
-  releases_access_level: string,
-  environments_access_level: string,
-  feature_flags_access_level: string,
-  infrastructure_access_level: string,
-  monitor_access_level: string,
-  emails_disabled: boolean,
-  emails_enabled: boolean,
-  shared_runners_enabled: boolean,
-  lfs_enabled: boolean,
-  creator_id: number,
-  import_url: string | null,
-  import_type: string | null,
-  import_status: string,
-  open_issues_count: number,
-  description_html: string,
-  updated_at: string,
-  ci_default_git_depth: number,
-  ci_forward_deployment_enabled: boolean,
-  ci_forward_deployment_rollback_allowed: boolean,
-  ci_job_token_scope_enabled: boolean,
-  ci_separated_caches: boolean,
-  ci_allow_fork_pipelines_to_run_in_parent_project: boolean,
-  build_git_strategy: string,
-  keep_latest_artifact: boolean,
-  restrict_user_defined_variables: boolean,
-  runners_token: string,
-  runner_token_expiration_interval: string | null,
-  group_runners_enabled: boolean,
-  auto_cancel_pending_pipelines: string,
-  build_timeout: number,
-  auto_devops_enabled: boolean,
-  auto_devops_deploy_strategy: string,
-  ci_config_path: string | null,
-  public_jobs: boolean,
-  shared_with_groups: string[],
-  only_allow_merge_if_pipeline_succeeds: boolean,
-  allow_merge_on_skipped_pipeline: string | null,
-  request_access_enabled: boolean,
-  only_allow_merge_if_all_discussions_are_resolved: boolean,
-  remove_source_branch_after_merge: boolean,
-  printing_merge_request_link_enabled: boolean,
-  merge_method: string,
-  squash_option: string,
-  enforce_auth_checks_on_uploads: boolean,
-  suggestion_commit_message: string | null,
-  merge_commit_template: string | null,
-  squash_commit_template: string | null,
-  issue_branch_template: string | null,
-  autoclose_referenced_issues: boolean,
-  repository_storage: string,
+  issues_enabled: boolean
+  merge_requests_enabled: boolean
+  wiki_enabled: boolean
+  jobs_enabled: boolean
+  snippets_enabled: boolean
+  container_registry_enabled: boolean
+  service_desk_enabled: boolean
+  service_desk_address: string | null
+  can_create_merge_request_in: boolean
+  issues_access_level: string
+  repository_access_level: string
+  merge_requests_access_level: string
+  forking_access_level: string
+  wiki_access_level: string
+  builds_access_level: string
+  snippets_access_level: string
+  pages_access_level: string
+  analytics_access_level: string
+  container_registry_access_level: string
+  security_and_compliance_access_level: string
+  releases_access_level: string
+  environments_access_level: string
+  feature_flags_access_level: string
+  infrastructure_access_level: string
+  monitor_access_level: string
+  emails_disabled: boolean
+  emails_enabled: boolean
+  shared_runners_enabled: boolean
+  lfs_enabled: boolean
+  creator_id: number
+  import_url: string | null
+  import_type: string | null
+  import_status: string
+  open_issues_count: number
+  description_html: string
+  updated_at: string
+  ci_default_git_depth: number
+  ci_forward_deployment_enabled: boolean
+  ci_forward_deployment_rollback_allowed: boolean
+  ci_job_token_scope_enabled: boolean
+  ci_separated_caches: boolean
+  ci_allow_fork_pipelines_to_run_in_parent_project: boolean
+  build_git_strategy: string
+  keep_latest_artifact: boolean
+  restrict_user_defined_variables: boolean
+  runners_token: string
+  runner_token_expiration_interval: string | null
+  group_runners_enabled: boolean
+  auto_cancel_pending_pipelines: string
+  build_timeout: number
+  auto_devops_enabled: boolean
+  auto_devops_deploy_strategy: string
+  ci_config_path: string | null
+  public_jobs: boolean
+  shared_with_groups: string[]
+  only_allow_merge_if_pipeline_succeeds: boolean
+  allow_merge_on_skipped_pipeline: string | null
+  request_access_enabled: boolean
+  only_allow_merge_if_all_discussions_are_resolved: boolean
+  remove_source_branch_after_merge: boolean
+  printing_merge_request_link_enabled: boolean
+  merge_method: string
+  squash_option: string
+  enforce_auth_checks_on_uploads: boolean
+  suggestion_commit_message: string | null
+  merge_commit_template: string | null
+  squash_commit_template: string | null
+  issue_branch_template: string | null
+  autoclose_referenced_issues: boolean
+  repository_storage: string
   permissions: {
-    project_access: string | null,
+    project_access: string | null
     group_access: {
-      access_level: number,
+      access_level: number
       notification_level: number
     }
   }
 }
 
 export interface GitlabFetcherProjectPipelineInfo {
-  id: number,
-  iid: number,
-  project_id: number,
-  status: string,
-  source: string,
-  ref: string,
-  sha: string,
-  name: string,
-  web_url: string,
-  created_at: string,
+  id: number
+  iid: number
+  project_id: number
+  status: string
+  source: string
+  ref: string
+  sha: string
+  name: string
+  web_url: string
+  created_at: string
   updated_at: string
+  jobs?: GitlabFetcherProjectPipelineJobInfo[] | GitlabFetcherErrorData
+  bridges?: GitlabFetcherProjectPipelineBridgeInfo[] | GitlabFetcherErrorData
+}
+
+export interface GitlabFetcherProjectPipelineJobInfo {
+  commit: {
+    author_email: string
+    author_name: string
+    created_at: string
+    id: string
+    message: string
+    short_id: string
+    title: string
+  }
+  coverage: string | null
+  allow_failure: boolean
+  created_at: string
+  started_at: string
+  finished_at: string
+  erased_at: string | null
+  duration: number
+  queued_duration: number
+  artifacts_expire_at: string
+  tag_list: string[]
+  id: number
+  name: string
+  pipeline: {
+    id: number
+    project_id: number
+    ref: string
+    sha: string
+    status: string
+  }
+  ref: string
+  artifacts: string[]
+  runner: string | null
+  stage: string
+  status: string
+  failure_reason: string
+  tag: boolean
+  web_url: string
+  project: {
+    ci_job_token_scope_enabled: boolean
+  },
+  user: {
+    id: number
+    name: string
+    username: string
+    state: string
+    avatar_url: string
+    web_url: string
+    created_at: string
+    bio: string | null
+    location: string | null
+    public_email: string
+    skype: string
+    linkedin: string
+    twitter: string
+    website_url: string
+    organization: string
+  }
+}
+
+export interface GitlabFetcherProjectPipelineBridgeInfo {
+  commit: {
+    author_email: string
+    author_name: string
+    created_at: string
+    id: string
+    message: string
+    short_id: string
+    title: string
+  }
+  coverage: string | null
+  allow_failure: boolean
+  created_at: string
+  started_at: string
+  finished_at: string
+  erased_at: string | null
+  duration: number
+  queued_duration: number
+  id: number
+  name: string
+  pipeline: {
+    id: number
+    project_id: number
+    ref: string
+    sha: string
+    status: string
+    created_at: string
+    updated_at: string
+    web_url: string
+  }
+  ref: string
+  stage: string
+  status: string
+  tag: boolean
+  web_url: string
+  project: {
+    ci_job_token_scope_enabled: boolean
+  }
+  user: {
+    id: number
+    name: string
+    username: string
+    state: string
+    avatar_url: string
+    web_url: string
+    created_at: string
+    bio: string | null
+    location: string | null
+    public_email: string
+    skype: string
+    linkedin: string
+    twitter: string
+    website_url: string
+    organization: string
+  }
+  downstream_pipeline: {
+    id: number
+    sha: string
+    ref: string
+    status: string
+    created_at: string
+    updated_at: string
+    web_url: string
+  }
+}
+
+interface GetProjectsPipelineOptions {
+  getJobs?: boolean
+  getBridges?: boolean
 }
 
 type GitlabFetcherFilterType = {[key: string]: string}
@@ -261,8 +393,31 @@ export default class GitlabFetcher {
     return await this.get<GitlabFetcherProjectInfo>(`projects/${id}`)
   }
 
-  async getProjectsPipeline(projectId: number) {
-    return await this.get<GitlabFetcherProjectPipelineInfo>(`projects/${projectId}/pipelines`)
+  async getProjectsPipeline(projectId: number, options?: GetProjectsPipelineOptions) {
+    const pipelines = await this.get<GitlabFetcherProjectPipelineInfo[]>(`projects/${projectId}/pipelines`)
+
+    if ('error' in pipelines) return pipelines
+
+    if (options) {
+      if (Object.keys(options).length > 0) {
+        const { getJobs, getBridges } = options
+
+        for (const pipeline of pipelines) {
+          const { id } = pipeline
+          const url = `projects/${projectId}/pipelines/${id}`
+
+          if (getJobs) {
+            pipeline.jobs = await this.get<GitlabFetcherProjectPipelineJobInfo[]>(`${url}/jobs`)
+          }
+
+          if (getBridges) {
+            pipeline.bridges = await this.get<GitlabFetcherProjectPipelineBridgeInfo[]>(`${url}/bridges`)
+          }
+        }
+      }
+    }
+
+    return pipelines
   }
 
   async get<T>(resource: string, filter: GitlabFetcherFilterType = {}) {

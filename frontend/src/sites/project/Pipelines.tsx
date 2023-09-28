@@ -3,10 +3,10 @@ import { PipelinesLoaderReturn } from './PipelinesLoader.tsx'
 
 
 export default function Pipelines() {
-  const { project } = useLoaderData() as PipelinesLoaderReturn
+  const { project, pipelines } = useLoaderData() as PipelinesLoaderReturn
 
-  console.log('project')
-  console.log(project)
+  console.log('project 123')
+  console.log(project, pipelines)
 
   if ('error' in project) {
     return <Navigate to="/login" replace state={{

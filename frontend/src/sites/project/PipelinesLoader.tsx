@@ -1,8 +1,6 @@
 import { AuthState } from '../../store/reducer.tsx'
 import GitlabFetcher, {
-  GitlabFetcherErrorData,
   GitlabFetcherProjectInfo,
-  GitlabFetcherProjectPipelineInfo
 } from '../../libs/GitlabFetcher.ts'
 import { LoaderFunctionArgs } from 'react-router-dom'
 
@@ -12,7 +10,7 @@ export interface PipelinesLoaderParams {
 
 export interface PipelinesLoaderReturn {
   project: GitlabFetcherProjectInfo | PipelinesLoaderError
-  pipelines: GitlabFetcherErrorData | GitlabFetcherProjectPipelineInfo
+  pipelines: Awaited<ReturnType<GitlabFetcher['getProjectsPipeline']>>
 }
 
 export interface PipelinesLoaderError {
@@ -45,7 +43,10 @@ export default function pipelinesLoader(state: AuthState) {
       }
     }
 
-    const pipelines = await gitlabFetcher.getProjectsPipeline(projectId)
+    const pipelines = await gitlabFetcher.getProjectsPipeline(projectId, {
+      getJobs: true,
+      getBridges: true,
+    })
 
     return { project, pipelines }
   }
