@@ -40,8 +40,8 @@ export default function AddProjectDialog({ open, onClose, excludeNamespaces }: N
       try {
         const projects = await gitlabFetcher.getProjects(projectsFilter)
         const projectListProjects = projects.reduce<ProjectListProject[]>((previousValue, currentValue) => {
-          const { name, avatar_url: avatar, name_with_namespace: nameWithNamespace } = currentValue
-          const returnProject: ProjectListProject = { name, nameWithNamespace }
+          const { id, name, avatar_url: avatar, name_with_namespace: nameWithNamespace } = currentValue
+          const returnProject: ProjectListProject = { id, name, nameWithNamespace }
 
           if (avatar) {
             returnProject.avatar = avatar

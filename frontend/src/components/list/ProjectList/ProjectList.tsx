@@ -20,6 +20,7 @@ interface ProjectListPropSelectableMultiple extends Pick<ProjectListSelectMultip
 }
 
 export interface ProjectListProject {
+  id: number
   name: string
   nameWithNamespace: string
   avatar?: string
