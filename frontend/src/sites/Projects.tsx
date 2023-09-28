@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Button, DialogContentText, Toolbar, Typography } from '@mui/material'
+import { Backdrop, Box, Button, CircularProgress, DialogContentText, Toolbar, Typography } from '@mui/material'
 import AddProjectDialog from '../components/dialog/AddProjectDialog.tsx'
 import SearchInput from '../components/input/SearchInput'
 import { ProjectListProject } from '../components/list/ProjectList/ProjectList.tsx'
@@ -15,6 +15,7 @@ export default function Projects() {
   const [projects, setProjects] = useState<ProjectListProject[]>([])
   const [addProjectDialogOpen, setAddProjectDialogOpen] = useState(false)
   const [confirmDeleteProjectOpen, setConfirmDeleteProjectOpen] = useState<ProjectListProject | null>(null)
+  const [showLoadingSpinner, setShowLoadingSpinner] = useState<boolean>(false)
   const navigate = useNavigate()
 
   const handleClickOpen = () => {
@@ -51,6 +52,7 @@ export default function Projects() {
     console.log('handleProjectListItemClick')
     console.log(project)
 
+    setShowLoadingSpinner(true)
     navigate(`/project/${project.id}`)
   }
 
@@ -95,6 +97,12 @@ export default function Projects() {
           </DialogActions>
         </Dialog>
       </Box>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={showLoadingSpinner}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   )
 }

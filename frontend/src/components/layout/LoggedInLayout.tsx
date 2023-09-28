@@ -70,6 +70,10 @@ export default function LoggedInLayout() {
     handleProfileMenuClose()
   }
 
+  function handleLogoClick() {
+    navigate('/')
+  }
+
   if (user) {
     const { name, username, avatar_url: avatarURL } = user
 
@@ -85,7 +89,7 @@ export default function LoggedInLayout() {
           }}>
             <Button
               variant="text"
-              href="/"
+              onClick={handleLogoClick}
               sx={{
                 color: 'white',
                 textTransform: 'none',
