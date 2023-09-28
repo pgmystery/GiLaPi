@@ -39,6 +39,9 @@ export default function AddProjectDialog({ open, onClose, excludeNamespaces }: N
     async function requestProjects(gitlabFetcher: GitlabFetcher, projectsFilter: {search: string}) {
       try {
         const projects = await gitlabFetcher.getProjects(projectsFilter)
+
+        if ('error' in projects) return []
+
         const projectListProjects = projects.reduce<ProjectListProject[]>((previousValue, currentValue) => {
           const { id, name, avatar_url: avatar, name_with_namespace: nameWithNamespace } = currentValue
           const returnProject: ProjectListProject = { id, name, nameWithNamespace }

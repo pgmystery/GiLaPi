@@ -14,6 +14,9 @@ interface PipelinesLoaderReturn {
 export default function Pipelines() {
   const { project } = useLoaderData() as PipelinesLoaderReturn
 
+  console.log('project')
+  console.log(project)
+
   if ('error' in project) {
     return <Navigate to="/login" replace state={{
       alert: {

@@ -24,6 +24,16 @@ export default function pipelinesLoader(state: AuthState) {
     const gitlabFetcher = new GitlabFetcher(gitlabURI, AccessToken)
     const project = await gitlabFetcher.getProjectById(projectId)  // TODO: TRY AND CATCH IF THE ACCESS_TOKEN IS EXPIRED
 
+    if ('error' in project) {
+      return {
+        project: {
+          error: true,
+          title: project.error,
+          message: project.error_description,
+        }
+      }
+    }
+
     return { project }
   }
 

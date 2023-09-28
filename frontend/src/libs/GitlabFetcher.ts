@@ -183,6 +183,11 @@ interface GitlabFetcherFetchOptions {
   isJSON?: boolean
 }
 
+interface GitlabFetcherFetchReturn<T> {
+  result: T | GitlabFetcherErrorData,
+  response: Response,
+}
+
 export class NoAccessTokenException extends Error {}
 
 const defaultFetchOptions: GitlabFetcherFetchOptions = {
@@ -211,7 +216,7 @@ export default class GitlabFetcher {
   async requestAccessToken(clientId: string, code: string, redirectURL: string) {
     const url = `${this.gitlabURI}/oauth/token?client_id=${clientId}&code=${code}&grant_type=authorization_code&redirect_uri=${redirectURL}`
 
-    const result = await this._fetch(url, {
+    const { result } = await this._fetch<GitlabFetcherAccessTokenData>(url, {
       method: 'POST',
     })
 
@@ -219,7 +224,7 @@ export default class GitlabFetcher {
       this.accessToken = result.access_token
     }
 
-    return result as GitlabFetcherAccessTokenData | GitlabFetcherErrorData
+    return result
   }
 
   async getUserInfo() {
@@ -229,20 +234,20 @@ export default class GitlabFetcher {
 
     const url = `${this.gitlabURI}/api/v4/user?access_token=${this.accessToken}`
 
-    const result = await this._fetch(url)
+    const { result } = await this._fetch<GitlabFetcherUserInfo>(url)
 
-    return result as GitlabFetcherUserInfo | GitlabFetcherErrorData
+    return result
   }
 
   async getProjects(filter?: GitlabFetcherFilterType) {
-    return await this.get('projects', filter) as GitlabFetcherProjectInfo[]
+    return await this.get<GitlabFetcherProjectInfo[]>('projects', filter)
   }
 
   async getProjectById(id: number) {
-    return await this.get(`projects/${id}`) as GitlabFetcherProjectInfo
+    return await this.get<GitlabFetcherProjectInfo>(`projects/${id}`)
   }
 
-  async get(resource: string, filter: GitlabFetcherFilterType = {}) {
+  async get<T>(resource: string, filter: GitlabFetcherFilterType = {}) {
     if (!this.accessToken) {
       throw new NoAccessTokenException('AccessToken is required for this request')
     }
@@ -257,12 +262,12 @@ export default class GitlabFetcher {
       }
     }
 
-    const result = await this._fetch(url)
+    const { result } = await this._fetch<T>(url)
 
     return result
   }
 
-  private async _fetch(url: string, options: GitlabFetcherFetchOptions = defaultFetchOptions) {
+  private async _fetch<T>(url: string, options: GitlabFetcherFetchOptions = defaultFetchOptions): Promise<GitlabFetcherFetchReturn<T>> {
     options = {
       ...defaultFetchOptions,
       ...options,
@@ -275,16 +280,25 @@ export default class GitlabFetcher {
     })
 
     if (isJSON) {
-      return await response.json()
+      const result = await response.json()
+
+      return {
+        result,
+        response,
+      }
     }
 
-    return await response.text()
+    const result = await response.text() as T
+
+    return {
+      result,
+      response,
+    }
   }
 
   getAuthorizeURL(clientId: string, redirectURI: string, scope: string[]) {
     const scopeString = scope.join('+')
-    const url = `${this.gitlabURI}/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectURI}&response_type=code&state=STATE&scope=${scopeString}`
 
-    return url
+    return `${this.gitlabURI}/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectURI}&response_type=code&state=STATE&scope=${scopeString}`
   }
 }
