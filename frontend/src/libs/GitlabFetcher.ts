@@ -176,6 +176,20 @@ export interface GitlabFetcherProjectInfo {
   }
 }
 
+export interface GitlabFetcherProjectPipelineInfo {
+  id: number,
+  iid: number,
+  project_id: number,
+  status: string,
+  source: string,
+  ref: string,
+  sha: string,
+  name: string,
+  web_url: string,
+  created_at: string,
+  updated_at: string
+}
+
 type GitlabFetcherFilterType = {[key: string]: string}
 
 interface GitlabFetcherFetchOptions {
@@ -245,6 +259,10 @@ export default class GitlabFetcher {
 
   async getProjectById(id: number) {
     return await this.get<GitlabFetcherProjectInfo>(`projects/${id}`)
+  }
+
+  async getProjectsPipeline(projectId: number) {
+    return await this.get<GitlabFetcherProjectPipelineInfo>(`projects/${projectId}/pipelines`)
   }
 
   async get<T>(resource: string, filter: GitlabFetcherFilterType = {}) {

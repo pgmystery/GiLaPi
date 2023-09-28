@@ -1,20 +1,33 @@
 import { AuthState } from '../../store/reducer.tsx'
-import GitlabFetcher from '../../libs/GitlabFetcher.ts'
+import GitlabFetcher, {
+  GitlabFetcherErrorData,
+  GitlabFetcherProjectInfo,
+  GitlabFetcherProjectPipelineInfo
+} from '../../libs/GitlabFetcher.ts'
 import { LoaderFunctionArgs } from 'react-router-dom'
 
-interface PipelinesLoaderParams {
+export interface PipelinesLoaderParams {
   projectId: number
 }
 
+export interface PipelinesLoaderReturn {
+  project: GitlabFetcherProjectInfo | PipelinesLoaderError
+  pipelines: GitlabFetcherErrorData | GitlabFetcherProjectPipelineInfo
+}
+
+export interface PipelinesLoaderError {
+  error: true
+  title: string
+  message: string
+}
+
 export default function pipelinesLoader(state: AuthState) {
-  async function requestProjectData({ params }: LoaderFunctionArgs) {
+  async function requestProjectData({ params }: LoaderFunctionArgs): Promise<PipelinesLoaderReturn | PipelinesLoaderError> {
     if (!user) {
       return {
-        project: {
-          error: true,
-          title: 'No authentication-data',
-          message: 'No authentication-data is set',
-        }
+        error: true,
+        title: 'No authentication-data',
+        message: 'No authentication-data is set',
       }
     }
 
@@ -26,15 +39,15 @@ export default function pipelinesLoader(state: AuthState) {
 
     if ('error' in project) {
       return {
-        project: {
-          error: true,
-          title: project.error,
-          message: project.error_description,
-        }
+        error: true,
+        title: project.error,
+        message: project.error_description,
       }
     }
 
-    return { project }
+    const pipelines = await gitlabFetcher.getProjectsPipeline(projectId)
+
+    return { project, pipelines }
   }
 
   const { gitlabURI, user } = state

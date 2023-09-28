@@ -1,15 +1,6 @@
-import { GitlabFetcherProjectInfo } from '../../libs/GitlabFetcher.ts'
 import { Navigate, useLoaderData } from 'react-router-dom'
+import { PipelinesLoaderReturn } from './PipelinesLoader.tsx'
 
-interface PipelinesLoaderError {
-  error: true
-  title: string
-  message: string
-}
-
-interface PipelinesLoaderReturn {
-  project: GitlabFetcherProjectInfo | PipelinesLoaderError
-}
 
 export default function Pipelines() {
   const { project } = useLoaderData() as PipelinesLoaderReturn
@@ -26,8 +17,20 @@ export default function Pipelines() {
       },
     }} />
   }
+  else if ('message' in project) {
+    // TODO: NOT NAVIGATE TO LOGIN
+    return <Navigate to="/login" replace state={{
+      alert: {
+        severity: 'error',
+        title: 'Error',
+        message: project.message,
+      },
+    }} />
+  }
+
+  const { name_with_namespace: nameWithNamespaces } = project
 
   return (
-    <h1>Pipelines for project "{ project.name_with_namespace }"</h1>
+    <h1>Pipelines for project "{ nameWithNamespaces }"</h1>
   )
 }
