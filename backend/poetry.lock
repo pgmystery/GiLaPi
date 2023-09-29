@@ -176,6 +176,30 @@ files = [
 ]
 
 [[package]]
+name = "motor"
+version = "3.3.1"
+description = "Non-blocking MongoDB driver for Tornado or asyncio"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "motor-3.3.1-py3-none-any.whl", hash = "sha256:a0dee83ad0d47b353932ac37467ba397b1e649ce7e3eea7f5a90554883d7cdbe"},
+    {file = "motor-3.3.1.tar.gz", hash = "sha256:c5eb400e27d722a3db03a9826656b6d13acf9b6c70c2fb4604f474eac9da5be4"},
+]
+
+[package.dependencies]
+pymongo = ">=4.5,<5"
+
+[package.extras]
+aws = ["pymongo[aws] (>=4.5,<5)"]
+encryption = ["pymongo[encryption] (>=4.5,<5)"]
+gssapi = ["pymongo[gssapi] (>=4.5,<5)"]
+ocsp = ["pymongo[ocsp] (>=4.5,<5)"]
+snappy = ["pymongo[snappy] (>=4.5,<5)"]
+srv = ["pymongo[srv] (>=4.5,<5)"]
+test = ["aiohttp", "mockupdb", "motor[encryption]", "pytest (>=7)", "tornado (>=5)"]
+zstd = ["pymongo[zstd] (>=4.5,<5)"]
+
+[[package]]
 name = "packaging"
 version = "23.1"
 description = "Core utilities for Python packages"
@@ -337,6 +361,21 @@ files = [
 
 [package.dependencies]
 typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
+
+[[package]]
+name = "pydantic-settings"
+version = "2.0.3"
+description = "Settings management using Pydantic"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pydantic_settings-2.0.3-py3-none-any.whl", hash = "sha256:ddd907b066622bd67603b75e2ff791875540dc485b7307c4fffc015719da8625"},
+    {file = "pydantic_settings-2.0.3.tar.gz", hash = "sha256:962dc3672495aad6ae96a4390fac7e593591e144625e5112d359f8f67fb75945"},
+]
+
+[package.dependencies]
+pydantic = ">=2.0.1"
+python-dotenv = ">=0.21.0"
 
 [[package]]
 name = "pymongo"
@@ -746,4 +785,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e9bee50fcea4ee544330c8f7cd856d6aecd39b806c0c4b06319033c06424b3c2"
+content-hash = "9ee9e57c8623c9ded08430af500e4d25b26d0321571db4972d4f06f7b6ff6f47"

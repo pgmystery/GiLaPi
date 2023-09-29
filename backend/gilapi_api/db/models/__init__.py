@@ -1,2 +1,2 @@
-from gilapi_api.db.models.User import User
-from gilapi_api.db.models.Project import Project
+from gilapi_api.db.models.user import User
+from gilapi_api.db.models.project import Project
