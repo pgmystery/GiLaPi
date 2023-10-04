@@ -11,9 +11,10 @@ import {
 } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../App.tsx'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate, useLoaderData, useLocation } from 'react-router-dom'
 import GitlabLogo from '../resources/GitlabLogo.tsx'
 import GitlabFetcher from '../libs/GitlabFetcher.ts'
+import { LoaderLoginData } from './loaders/LoginLoader.tsx'
 
 
 export interface AlertDataType {
@@ -29,6 +30,7 @@ interface LocationType {
 
 export default function Login() {
   const { state: authState } = useContext(AuthContext)
+  const { gitlabs } = useLoaderData() as LoaderLoginData
   const [alertData, setAlertData] = useState<AlertDataType | null>(null)
   const [showAlert, setShowAlert] = useState<boolean>(false)
   const { state } = useLocation() as LocationType
@@ -42,6 +44,8 @@ export default function Login() {
       setShowAlert(true)
     }
   }, [state])
+
+  if (gitlabs.length === 0) return <Navigate to={"/setup"} />
 
   const {clientId, redirectURI, isLoggedIn, gitlabURI} = authState
 

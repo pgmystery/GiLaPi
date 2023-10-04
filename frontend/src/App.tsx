@@ -9,6 +9,7 @@ import Logout from './sites/Logout.tsx'
 import LoggedInLayout from './components/layout/LoggedInLayout.tsx'
 import Pipelines from './sites/project/Pipelines.tsx'
 import pipelinesLoader from './sites/project/PipelinesLoader.tsx'
+import { loginLoader } from './sites/loaders/LoginLoader.tsx'
 
 
 export const AuthContext = createContext<AuthContextType>({
@@ -24,6 +25,7 @@ function App() {
     {
       path: '/login',
       element: <Login />,
+      loader: loginLoader,
     },
     {
       path: '/logout',
