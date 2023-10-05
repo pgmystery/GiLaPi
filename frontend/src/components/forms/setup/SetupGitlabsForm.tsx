@@ -61,6 +61,7 @@ export default function SetupGitlabsForm() {
               <DeleteIcon />
             </IconButton>
           }
+          key={name}
         >
           <ListItemText
             primary={name}

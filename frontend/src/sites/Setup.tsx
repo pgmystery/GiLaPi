@@ -1,6 +1,7 @@
 import { Container, Paper } from '@mui/material'
 import { useState } from 'react'
 import { Navigate } from 'react-router-dom'
+import SetupGitlabsForm from '../components/forms/setup/SetupGitlabsForm.tsx'
 
 
 // STEPS:
@@ -15,7 +16,7 @@ export default function Setup() {
   function getSetupStageForm() {
     switch (setupState) {
       case 0:
-        return <></>
+        return <SetupGitlabsForm />
       case 1:
         return <></>
       default:
