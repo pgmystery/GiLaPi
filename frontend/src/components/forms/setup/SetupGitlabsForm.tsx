@@ -66,9 +66,6 @@ export default function SetupGitlabsForm({ data, setData, setIsStageReady }: Set
   }
 
   function getGitlabsItems() {
-    console.log('getGitlabsItems')
-    console.log(data)
-
     return data.map(gitlab => {
       const { name, url } = gitlab
 
