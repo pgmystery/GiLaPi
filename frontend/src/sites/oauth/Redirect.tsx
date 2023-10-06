@@ -35,15 +35,20 @@ export default function Redirect() {
           )
 
           if ('error' in accessTokenData) {
-            navigate('/login', {
-              state: {
-                alert: {
-                  severity: 'error',
-                  title: accessTokenData.error,
-                  message: accessTokenData.error_description,
-                },
-              }
-            })
+            if (window.opener) {
+              window.close()
+            }
+            else {
+              navigate('/login', {
+                state: {
+                  alert: {
+                    severity: 'error',
+                    title: accessTokenData.error,
+                    message: accessTokenData.error_description,
+                  },
+                }
+              })
+            }
 
             return
           }
@@ -51,15 +56,20 @@ export default function Redirect() {
           const userData = await gitlabFetcher.getUserInfo()
 
           if ('error' in userData) {
-            navigate('/login', {
-              state: {
-                alert: {
-                  severity: 'error',
-                  title: userData.error,
-                  message: userData.error_description,
-                },
-              }
-            })
+            if (window.opener) {
+              window.close()
+            }
+            else {
+              navigate('/login', {
+                state: {
+                  alert: {
+                    severity: 'error',
+                    title: userData.error,
+                    message: userData.error_description,
+                  },
+                }
+              })
+            }
 
             return
           }
@@ -106,7 +116,12 @@ export default function Redirect() {
         }
       }
       else {
-        redirect('/login')
+        if (window.opener) {
+          window.close()
+        }
+        else {
+          redirect('/login')
+        }
       }
     }
 
@@ -118,7 +133,12 @@ export default function Redirect() {
   }, [clientId, codeData, dispatch, gitlabURI, isLoggedIn, navigate])
 
   if (isLoggedIn) {
-    return <Navigate to="/login" replace={true} />
+    if (window.opener) {
+      window.close()
+    }
+    else {
+      return <Navigate to="/login" replace={true} />
+    }
   }
 
   if (codeData && clientId) {
@@ -133,7 +153,7 @@ export default function Redirect() {
               paddingBottom: '20px',
             }}
           >
-            <Typography variant="h3" gutterBottom>Logging in (please wait)...</Typography>
+            <Typography variant="h2" gutterBottom>Logging in (please wait)...</Typography>
           </Box>
         </Container>
         <Backdrop
@@ -146,6 +166,11 @@ export default function Redirect() {
     )
   }
   else {
-    return <Navigate to="/login" replace={true} />
+    if (window.opener) {
+      window.close()
+    }
+    else {
+      return <Navigate to="/login" replace={true} />
+    }
   }
 }

@@ -1,18 +1,13 @@
 import Typography from '@mui/material/Typography'
 import { Box, IconButton, ListItem, Stack, TextField } from '@mui/material'
 import List from '@mui/material/List'
-import React, { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ListItemText from '@mui/material/ListItemText'
 import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
+import { SetupStageFormProps } from '../../../sites/Setup.tsx'
 
-
-interface SetupGitlabsFormProps {
-  data: GitlabsListData[]
-  setData: React.Dispatch<GitlabsListData[]>
-  setIsStageReady: React.Dispatch<React.SetStateAction<boolean>>
-}
 
 export interface GitlabsListData {
   name: string
@@ -20,7 +15,7 @@ export interface GitlabsListData {
 }
 
 
-export default function SetupGitlabsForm({ data, setData, setIsStageReady }: SetupGitlabsFormProps) {
+export default function SetupGitlabsForm({ data, setData, setIsStageReady }: SetupStageFormProps<GitlabsListData[]>) {
   const [nameFieldText, setNameFieldText] = useState<string>('')
   const [urlFieldText, setUrlFieldText] = useState<string>('')
 

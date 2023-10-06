@@ -1,8 +1,9 @@
 import { Box, Container, Paper, Step, StepButton, Stepper } from '@mui/material'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import SetupGitlabsForm, { GitlabsListData } from '../components/forms/setup/SetupGitlabsForm.tsx'
 import Button from '@mui/material/Button'
+import SetupSuperAdminForm, { SuperAdminData } from '../components/forms/setup/SetupSuperAdminForm.tsx'
 
 
 // STEPS:
@@ -14,6 +15,12 @@ import Button from '@mui/material/Button'
 interface SetupData {
   0: GitlabsListData[],
   1: unknown
+}
+
+export interface SetupStageFormProps<T> {
+  data: T
+  setData: React.Dispatch<T>
+  setIsStageReady: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const setupStageLabels = [
@@ -35,7 +42,7 @@ export default function Setup() {
       case 0:
         return <SetupGitlabsForm data={setupData['0']} setData={data => setSetupStageData<GitlabsListData[]>(data)} setIsStageReady={setIsStageReady} />
       case 1:
-        return <></>
+        return <SetupSuperAdminForm data={setupData['1']} gitlabs={setupData['0']} setData={data => setSetupStageData<SuperAdminData>(data)} setIsStageReady={setIsStageReady} />
       default:
         return <Navigate to="/login" replace />
     }
