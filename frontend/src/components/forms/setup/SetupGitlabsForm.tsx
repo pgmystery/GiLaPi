@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography'
 import { Box, IconButton, ListItem, Stack, TextField } from '@mui/material'
 import List from '@mui/material/List'
-import { FormEvent, useEffect, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ListItemText from '@mui/material/ListItemText'
 import Button from '@mui/material/Button'
@@ -66,6 +66,9 @@ export default function SetupGitlabsForm({ data, setData, setIsStageReady }: Set
   }
 
   function getGitlabsItems() {
+    console.log('getGitlabsItems')
+    console.log(data)
+
     return data.map(gitlab => {
       const { name, url } = gitlab
 
@@ -92,9 +95,9 @@ export default function SetupGitlabsForm({ data, setData, setIsStageReady }: Set
       <Typography variant="h4" gutterBottom>Add Gitlab environments</Typography>
       <Box>
         <Stack component="form" spacing={2} onSubmit={addItemToList}>
-          <TextField label="Name" variant="filled" required autoFocus value={nameFieldText} onChange={e => setNameFieldText(e.target.value)} />
-          <TextField label="URL" variant="filled" type="url" required value={urlFieldText} onChange={e => setUrlFieldText(e.target.value)} />
-          <Button variant="contained" endIcon={<AddIcon />} type="submit" disabled={!(nameFieldText.length > 0 && urlFieldText.length > 0)}>Add</Button>
+          <TextField label="Name" variant="outlined" required autoFocus value={nameFieldText} onChange={e => setNameFieldText(e.target.value)} />
+          <TextField label="URL" variant="outlined" type="url" required value={urlFieldText} onChange={e => setUrlFieldText(e.target.value)} />
+          <Button variant="contained" endIcon={<AddIcon />} type="submit" disabled={!(nameFieldText.length > 0 && urlFieldText.length > 0)}>Add GitLab</Button>
         </Stack>
       </Box>
       <Box>

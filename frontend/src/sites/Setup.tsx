@@ -1,4 +1,4 @@
-import { Box, Container, Paper } from '@mui/material'
+import { Box, Container, Paper, Step, StepButton, Stepper } from '@mui/material'
 import { useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import SetupGitlabsForm, { GitlabsListData } from '../components/forms/setup/SetupGitlabsForm.tsx'
@@ -15,6 +15,11 @@ interface SetupData {
   0: GitlabsListData[],
   1: unknown
 }
+
+const setupStageLabels = [
+  'Add Gitlab environments',
+  'Set Super-Admin'
+]
 
 
 export default function Setup() {
@@ -44,7 +49,11 @@ export default function Setup() {
   }
 
   function handleNextStageButtonClick() {
-    setSetupState(setupState + 1)
+    setSetupState(Math.min(setupState + 1, setupStageLabels.length - 1))
+  }
+
+  function handleBackStageButtonClick() {
+    setSetupState(Math.max(setupState - 1, 0))
   }
 
   return (
@@ -55,9 +64,26 @@ export default function Setup() {
         <Box>
           { getSetupStageForm() }
         </Box>
+        <Box>
+          <Stepper activeStep={setupState} alternativeLabel>
+            {setupStageLabels.map((label, index) => (
+              <Step key={label}>
+                <StepButton color="inherit" onClick={() => setSetupState(index)} sx={{
+                  padding: 0,
+                  margin: 0,
+                  marginTop: '10px',
+                  marginBottom: '10px',
+                }}>
+                  {label}
+                </StepButton>
+              </Step>
+            ))}
+          </Stepper>
+        </Box>
         <Box sx={{
           display: 'flex'
         }}>
+          <Button variant="contained" disabled={setupState <= 0} onClick={handleBackStageButtonClick}>Back</Button>
           <Box sx={{flexGrow: 1}}></Box>
           <Button variant="contained" disabled={!isStageReady} onClick={handleNextStageButtonClick}>Next</Button>
         </Box>
