@@ -1,5 +1,5 @@
 import { ButtonProps } from '@mui/material/Button'
-import { Button } from '@mui/material'
+import { Backdrop, Button, CircularProgress } from '@mui/material'
 import GitlabLogo from '../../resources/GitlabLogo.tsx'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../App.tsx'
@@ -14,6 +14,7 @@ export interface GitlabLoginButtonProps extends ButtonProps {
 export interface GitlabLoginButtonPopupOptions {
   onLogin: (state: boolean)=>void
   window?: GitlabLoginButtonPopupWindowOptions
+  showLoading?: boolean
 }
 
 export interface GitlabLoginButtonPopupWindowOptions {
@@ -32,7 +33,7 @@ const defaultLoginPopupOptions: GitlabLoginButtonPopupWindowOptions = {
   title: 'GiLaPi GitLab OAuth login',
 }
 
-type PopupWindowState = null | 'open' | 'closed' | 'finish'
+type PopupWindowState = null | 'open' | 'closed'
 
 
 export default function GitlabLoginButton({ gitlabOAuthURL, openPopup, onClick, children, ...props }: GitlabLoginButtonProps) {
@@ -46,7 +47,7 @@ export default function GitlabLoginButton({ gitlabOAuthURL, openPopup, onClick, 
       const { isLoggedIn } = authState
 
       onLogin(isLoggedIn)
-      setLoginPopupWindowState('finish')
+      setLoginPopupWindowState(null)
     }
   }, [openPopup, authState, loginPopupWindow, loginPopupWindowState])
 
@@ -103,6 +104,14 @@ export default function GitlabLoginButton({ gitlabOAuthURL, openPopup, onClick, 
   }
 
   return openPopup
-    ? <ButtonComponent onClick={ handleClick }/>
+    ? <>
+        <ButtonComponent onClick={ handleClick } disabled={openPopup.showLoading === true && loginPopupWindowState !== null}/>
+        <Backdrop
+         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+         open={openPopup.showLoading === true && loginPopupWindowState !== null}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </>
     : <ButtonComponent href={ gitlabOAuthURL }/>
 }

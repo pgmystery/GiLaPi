@@ -119,9 +119,9 @@ export default function Login() {
         >
           <GitlabLoginButton
             gitlabOAuthURL={gitlabOAuthURL}
-            openPopup={{
-              onLogin: handleLogin
-            }}
+            // openPopup={{
+            //   onLogin: handleLogin
+            // }}
             onClick={() => setLoginButtonPressed(true)}
             disabled={loginButtonPressed}
           />
