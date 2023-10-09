@@ -1,19 +1,17 @@
 import {
-  AppBar,
   Box,
   Container,
   Paper,
   Step,
   StepButton,
   Stepper,
-  Toolbar
 } from '@mui/material'
 import React, { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import SetupGitlabsForm, { GitlabsListData } from '../components/forms/setup/SetupGitlabsForm.tsx'
 import Button from '@mui/material/Button'
 import SetupSuperAdminForm, { GilapiAdmin } from '../components/forms/setup/SetupSuperAdminForm.tsx'
-import Typography from '@mui/material/Typography'
+import GilapiToolbar from '../components/toolbar/GilapiToolbar.tsx'
 
 
 // STEPS:
@@ -43,7 +41,7 @@ export default function Setup() {
   const [setupState, setSetupState] = useState<number>(0)
   const [setupData, setSetupData] = useState<SetupData>({
     0: [],
-    1: [],
+    1: {},
   })
   const [isStageReady, setIsStageReady] = useState<boolean>(false)
   const navigate = useNavigate()
@@ -54,6 +52,8 @@ export default function Setup() {
         return <SetupGitlabsForm data={setupData['0']} setData={data => setSetupStageData<GitlabsListData[]>(data)} setIsStageReady={setIsStageReady} />
       case 1:
         return <SetupSuperAdminForm data={setupData['1']} gitlabs={setupData['0']} setData={data => setSetupStageData<GilapiAdmin>(data)} setIsStageReady={setIsStageReady} />
+      case 2:
+        break
       default:
         return <Navigate to="/login" replace />
     }
@@ -82,31 +82,7 @@ export default function Setup() {
 
   return (
     <>
-      <AppBar component="nav" sx={{
-        backgroundColor: '#E24329',
-      }}>
-        <Toolbar disableGutters sx={{
-          paddingLeft: '30px',
-          paddingRight: '30px',
-        }}>
-          <Button
-            variant="text"
-            onClick={handleLogoClick}
-            sx={{
-              color: 'white',
-              textTransform: 'none',
-            }}
-          >
-            <Typography variant="h4">
-              GiLaPi
-            </Typography>
-          </Button>
-          <Typography sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} ></Typography>
-        </Toolbar>
-      </AppBar>
-      <Toolbar sx={{
-        marginBottom: '16px',
-      }} />
+      <GilapiToolbar onLogoClick={handleLogoClick} addToolbarSpace />
       <Container>
         <Paper sx={{
           padding: '20px',

@@ -1,6 +1,6 @@
 import { SetupStageFormProps } from '../../../sites/Setup.tsx'
 import { GitlabsListData } from './SetupGitlabsForm.tsx'
-import { Box, IconButton, ListItem, ListItemButton, Stack, TextField } from '@mui/material'
+import { Box, ListItem, ListItemButton, Stack, TextField } from '@mui/material'
 import List from '@mui/material/List'
 import ListItemText from '@mui/material/ListItemText'
 import { useContext, useEffect, useState } from 'react'
@@ -10,7 +10,6 @@ import GitlabFetcher from '../../../libs/GitlabFetcher.ts'
 import { AuthContext } from '../../../App.tsx'
 import AlertCollapse from '../../alert/AlertCollapse.tsx'
 import { LoginState } from '../../../store/reducer.tsx'
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 
 
 export type GilapiAdmin = {
@@ -114,28 +113,6 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
     }
   }
 
-  function getLoginButton() {
-    if (selectedGitlab === null) {
-      return <Typography>Select a GitLab to login</Typography>
-    }
-    else {
-      return (
-        <Stack spacing={2} sx={{width: '100%'}}>
-          <TextField label="Client-ID" variant="outlined" fullWidth value={gitlabClientId} onChange={event => setGitlabClientId(event.currentTarget.value)} />
-          <GitlabLoginButton
-              gitlabOAuthURL={gitlabURL}
-              openPopup={{
-                onLogin: handleLogin,
-                showLoading: true,
-              }}
-              // onClick={() => setLoginButtonPressed(true)}
-              disabled={gitlabURL === '' || gitlabClientId === ''}
-            />
-        </Stack>
-      )
-    }
-  }
-
   return (
     <>
       <Typography variant="h4" gutterBottom>Set a GiLaPi-Admin</Typography>
@@ -154,11 +131,11 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
                 })}
               >
                 <ListItem
-                  secondaryAction={
-                    <IconButton>
-                      <CheckCircleOutlineIcon color="success" />
-                    </IconButton>
-                  }
+                  // secondaryAction={
+                  //   <IconButton>
+                  //     <CheckCircleOutlineIcon color="success" />
+                  //   </IconButton>
+                  // }
                 >
                   <ListItemText
                     primary={gitlab.name}
@@ -169,11 +146,22 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
             )) }
           </List>
         </Box>
+        <Box>
+          <TextField label="Client-ID" variant="outlined" fullWidth value={gitlabClientId} onChange={event => setGitlabClientId(event.currentTarget.value)} />
+        </Box>
         <Box sx={{
           display: 'flex',
           justifyContent: 'center',
         }}>
-          { getLoginButton() }
+          <GitlabLoginButton
+            gitlabOAuthURL={gitlabURL}
+            openPopup={{
+              onLogin: handleLogin,
+              showLoading: true,
+            }}
+            // onClick={() => setLoginButtonPressed(true)}
+            disabled={gitlabURL === '' || gitlabClientId === ''}
+          />
         </Box>
         <AlertCollapse open={loginAlert.show} title={loginAlert.title} severity={loginAlert.severity} onClose={() => setLoginAlert({
             ...loginAlert,

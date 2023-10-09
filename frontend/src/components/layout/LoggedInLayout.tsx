@@ -1,13 +1,12 @@
 import { Navigate, Outlet, useNavigate } from 'react-router-dom'
-import { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../App.tsx'
-import { AppBar, Box, Container, CssBaseline, IconButton, Link, Menu, MenuItem, Paper, Toolbar } from '@mui/material'
-import Typography from '@mui/material/Typography'
+import { Box, Container, CssBaseline, IconButton, Link, Menu, MenuItem, Paper } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import ListItemText from '@mui/material/ListItemText'
 import GitlabFetcher from '../../libs/GitlabFetcher.ts'
-import Button from '@mui/material/Button'
+import GilapiToolbar, { GilapiToolbarSpace } from '../toolbar/GilapiToolbar.tsx'
 
 
 export default function LoggedInLayout() {
@@ -78,82 +77,60 @@ export default function LoggedInLayout() {
     const { name, username, avatar_url: avatarURL } = user
 
     return (
-      <Box sx={{ display: 'flex' }}>
+      <>
         <CssBaseline />
-        <AppBar component="nav" sx={{
-          backgroundColor: '#E24329',
-        }}>
-          <Toolbar disableGutters sx={{
-            paddingLeft: '30px',
-            paddingRight: '30px',
-          }}>
-            <Button
-              variant="text"
-              onClick={handleLogoClick}
-              sx={{
-                color: 'white',
-                textTransform: 'none',
-              }}
-            >
-              <Typography variant="h4">
-                GiLaPi
-              </Typography>
-            </Button>
-            <Typography sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} ></Typography>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-              sx={{
-                padding: 0,
-              }}
-            >
-              <Avatar alt={username} src={avatarURL} />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleProfileMenuClose}
-            >
-              <Link href={`${gitlabURI}/${username}`} underline="none" color="inherit" target="_blank" rel="noopener">
-                <MenuItem>
-                  <ListItemText
-                    primary={ name }
-                    secondary={ `@${username}` }
-                  />
-                </MenuItem>
-              </Link>
-              <Divider />
-              <MenuItem onClick={handleProfileInfoClick}>Profile</MenuItem>
-              <Divider />
-              <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
-            </Menu>
-          </Toolbar>
-        </AppBar>
+        <GilapiToolbar onLogoClick={handleLogoClick} addToolbarSpace>
+          <GilapiToolbarSpace />
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleProfileMenuOpen}
+            color="inherit"
+            sx={{
+              padding: 0,
+            }}
+          >
+            <Avatar alt={username} src={avatarURL} />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+            open={Boolean(anchorEl)}
+            onClose={handleProfileMenuClose}
+          >
+            <Link href={`${gitlabURI}/${username}`} underline="none" color="inherit" target="_blank" rel="noopener">
+              <MenuItem>
+                <ListItemText
+                  primary={ name }
+                  secondary={ `@${username}` }
+                />
+              </MenuItem>
+            </Link>
+            <Divider />
+            <MenuItem onClick={handleProfileInfoClick}>Profile</MenuItem>
+            <Divider />
+            <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+          </Menu>
+        </GilapiToolbar>
         <Container>
-          <Toolbar sx={{
-            marginBottom: '16px',
-          }} />
           <Paper>
             <Box component="main">
               <Outlet />
             </Box>
           </Paper>
         </Container>
-      </Box>
+      </>
     )
   }
   else {
