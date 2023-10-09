@@ -107,7 +107,11 @@ export default function GitlabLoginButton({ gitlabOAuthURL, openPopup, onClick, 
     ? <>
         <ButtonComponent onClick={ handleClick } disabled={openPopup.showLoading === true && loginPopupWindowState !== null}/>
         <Backdrop
-         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+         sx={{
+           color: '#fff',
+           zIndex: (theme) => theme.zIndex.drawer + 1,
+           margin: '0 !important',
+        }}
          open={openPopup.showLoading === true && loginPopupWindowState !== null}
         >
           <CircularProgress color="inherit" />
