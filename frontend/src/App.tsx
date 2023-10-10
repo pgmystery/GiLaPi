@@ -11,6 +11,7 @@ import Pipelines from './sites/project/Pipelines.tsx'
 import pipelinesLoader from './sites/project/PipelinesLoader.tsx'
 import { loginLoader } from './sites/loaders/LoginLoader.tsx'
 import Setup from './sites/Setup.tsx'
+import setupLoader, { setupLoader2 } from './sites/loaders/SetupLoader.tsx'
 
 
 export const AuthContext = createContext<AuthContextType>({

@@ -36,7 +36,13 @@ export default function Login() {
     }
   }, [state])
 
-  if (gitlabs.length === 0) return <Navigate to={"/setup"} />
+  if (gitlabs.length === 0) {
+    dispatch({
+      type: LoginState.LOGOUT,
+    })
+
+    return <Navigate to={ '/setup' }/>
+  }
 
   const {clientId, redirectURI, isLoggedIn, gitlabURI} = authState
 

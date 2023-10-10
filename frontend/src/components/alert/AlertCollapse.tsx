@@ -4,7 +4,7 @@ import { AlertProps } from '@mui/material/Alert/Alert'
 
 interface AlertCollapseProps extends AlertProps {
   open: boolean
-  title: string
+  title?: string
 }
 
 export default function AlertCollapse({ open, title, children, ...props }: AlertCollapseProps) {

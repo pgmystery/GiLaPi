@@ -5,13 +5,16 @@ import {
   Step,
   StepButton,
   Stepper,
+  Stack,
+  Backdrop, CircularProgress,
 } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import SetupGitlabsForm, { GitlabsListData } from '../components/forms/setup/SetupGitlabsForm.tsx'
 import Button from '@mui/material/Button'
 import SetupSuperAdminForm, { GilapiAdmin } from '../components/forms/setup/SetupSuperAdminForm.tsx'
 import GilapiToolbar from '../components/toolbar/GilapiToolbar.tsx'
+import Typography from '@mui/material/Typography'
 
 
 // STEPS:
@@ -45,29 +48,41 @@ export default function Setup() {
   })
   const [isStageReady, setIsStageReady] = useState<boolean>(false)
   const navigate = useNavigate()
+  const getSetupStageForm = useCallback(() => {
+    function setSetupStageData<T>(stageData: T) {
+      setSetupData({
+        ...setupData,
+        [setupState]: stageData
+      })
+    }
+    console.log('getSetupStageForm')
 
-  function getSetupStageForm() {
     switch (setupState) {
       case 0:
         return <SetupGitlabsForm data={setupData['0']} setData={data => setSetupStageData<GitlabsListData[]>(data)} setIsStageReady={setIsStageReady} />
       case 1:
         return <SetupSuperAdminForm data={setupData['1']} gitlabs={setupData['0']} setData={data => setSetupStageData<GilapiAdmin>(data)} setIsStageReady={setIsStageReady} />
       case 2:
-        break
+        // finishSetup()
+
+        return (
+          <Box>
+            <Typography variant="h4" align="center" gutterBottom>Setup...</Typography>
+            <Backdrop
+              sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={true}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
+          </Box>
+        )
       default:
         return <Navigate to="/login" replace />
     }
-  }
-
-  function setSetupStageData<T>(stageData: T) {
-    setSetupData({
-      ...setupData,
-      [setupState]: stageData
-    })
-  }
+  }, [setupData, setupState])
 
   function handleNextStageButtonClick() {
-    setSetupState(Math.min(setupState + 1, setupStageLabels.length - 1))
+    setSetupState(Math.min(setupState + 1, setupStageLabels.length))
   }
 
   function handleBackStageButtonClick() {
@@ -87,33 +102,35 @@ export default function Setup() {
         <Paper sx={{
           padding: '20px',
         }}>
-          <Box>
-            { getSetupStageForm() }
-          </Box>
-          <Box>
-            <Stepper activeStep={setupState} alternativeLabel>
-              {setupStageLabels.map((label, index) => (
-                <Step key={label}>
-                  <StepButton color="inherit" onClick={() => setSetupState(index)} sx={{
-                    padding: 0,
-                    paddingTop: '5px',
-                    margin: 0,
-                    marginTop: '-5px',
-                    marginBottom: '10px',
-                  }}>
-                    {label}
-                  </StepButton>
-                </Step>
-              ))}
-            </Stepper>
-          </Box>
-          <Box sx={{
-            display: 'flex'
-          }}>
-            <Button variant="contained" disabled={setupState <= 0} onClick={handleBackStageButtonClick}>Back</Button>
-            <Box sx={{flexGrow: 1}}></Box>
-            <Button variant="contained" disabled={!isStageReady} onClick={handleNextStageButtonClick}>Next</Button>
-          </Box>
+          <Stack spacing={2 }>
+            <Box>
+              { getSetupStageForm() }
+            </Box>
+            <Box>
+              <Stepper activeStep={setupState} alternativeLabel>
+                {setupStageLabels.map((label, index) => (
+                  <Step key={label}>
+                    <StepButton color="inherit" onClick={() => setSetupState(index)} sx={{
+                      padding: 0,
+                      paddingTop: '5px',
+                      margin: 0,
+                      marginTop: '-5px',
+                      marginBottom: 0,
+                    }}>
+                      {label}
+                    </StepButton>
+                  </Step>
+                ))}
+              </Stepper>
+            </Box>
+            <Box sx={{
+              display: 'flex'
+            }}>
+              <Button variant="contained" disabled={setupState <= 0} onClick={handleBackStageButtonClick}>Back</Button>
+              <Box sx={{flexGrow: 1}}></Box>
+              <Button variant="contained" disabled={!isStageReady} onClick={handleNextStageButtonClick}>Next</Button>
+            </Box>
+          </Stack>
         </Paper>
       </Container>
     </>

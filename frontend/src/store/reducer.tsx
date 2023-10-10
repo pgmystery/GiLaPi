@@ -9,7 +9,7 @@ export enum LoginState {
   RELOAD,
 }
 
-interface AuthAction {
+export interface AuthAction {
   type: LoginState
   payload?: AuthState
 }

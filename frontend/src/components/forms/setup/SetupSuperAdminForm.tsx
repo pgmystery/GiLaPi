@@ -1,6 +1,6 @@
 import { SetupStageFormProps } from '../../../sites/Setup.tsx'
 import { GitlabsListData } from './SetupGitlabsForm.tsx'
-import { Box, ListItem, ListItemButton, Stack, TextField } from '@mui/material'
+import { Box, Button, ListItem, ListItemButton, Stack, TextField } from '@mui/material'
 import List from '@mui/material/List'
 import ListItemText from '@mui/material/ListItemText'
 import { useContext, useEffect, useState } from 'react'
@@ -10,6 +10,7 @@ import GitlabFetcher from '../../../libs/GitlabFetcher.ts'
 import { AuthContext } from '../../../App.tsx'
 import AlertCollapse from '../../alert/AlertCollapse.tsx'
 import { LoginState } from '../../../store/reducer.tsx'
+import GitlabLogo from '../../../resources/GitlabLogo.tsx'
 
 
 export type GilapiAdmin = {
@@ -28,7 +29,6 @@ interface SelectedGitlab {
 }
 
 interface LoginAlert {
-  show: boolean
   severity: 'error' | 'success'
   title: string
   message: string
@@ -41,15 +41,13 @@ const gitlabFetcher = new GitlabFetcher('')
 export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gitlabs }: SetupSuperAdminForm) {
   const {state: authState, dispatch} = useContext(AuthContext)
   const { isLoggedIn, user } = authState
-  const [selectedGitlab, setSelectedGitlab] = useState<SelectedGitlab | null>(null)
+  const [selectedGitlab, setSelectedGitlab] = useState<SelectedGitlab | null>({
+    index: 0,
+    gitlab: gitlabs[0],
+  })
   const [gitlabClientId, setGitlabClientId] = useState<string>('')
   const [gitlabURL, setGitlabURL] = useState<string>('')
-  const [loginAlert, setLoginAlert] = useState<LoginAlert>({
-    show: false,
-    severity: 'error',
-    title: '',
-    message: '',
-  })
+  const [loginAlert, setLoginAlert] = useState<LoginAlert | null>(null)
 
   useEffect(() => {
     if (selectedGitlab?.gitlab.url && gitlabClientId !== '') {
@@ -82,7 +80,6 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
       })
 
       setLoginAlert({
-        show: true,
         severity: 'success',
         title: 'Login success',
         message: 'Login was successfully',
@@ -105,11 +102,87 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
     }
     else {
       setLoginAlert({
-        show: true,
         severity: 'error',
         title: 'Login failed',
         message: 'Login to the gitlab failed'
       })
+    }
+  }
+
+  function getGitlabsListComponent() {
+    return (
+      <List>
+        { gitlabs.map((gitlab, index) => (
+          <ListItemButton
+            key={gitlab.name}
+            selected={selectedGitlab?.index === index}
+            onClick={() => setSelectedGitlab({
+              index,
+              gitlab,
+            })}
+          >
+            <ListItem>
+              <ListItemText
+                primary={gitlab.name}
+                secondary={gitlab.url}
+              />
+            </ListItem>
+          </ListItemButton>
+        )) }
+      </List>
+    )
+  }
+
+  function getFormComponent() {
+    if (isLoggedIn) {
+      return (
+        <Box sx={{display: 'flex', justifyContent: 'center'}}>
+          <Button
+            variant="contained"
+            startIcon={<GitlabLogo />}
+            size="large"
+            onClick={() => {
+              setLoginAlert(null)
+              dispatch({type: LoginState.LOGOUT})
+            }}
+          >
+            Logout
+          </Button>
+        </Box>
+      )
+    }
+    else {
+      return (
+        <>
+          <Box>
+            { getGitlabsListComponent() }
+          </Box>
+          <Box>
+            <TextField
+              label="Client-ID / Application-ID"
+              variant="outlined"
+              fullWidth
+              autoFocus
+              value={gitlabClientId}
+              onChange={event => setGitlabClientId(event.currentTarget.value)}
+            />
+          </Box>
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}>
+            <GitlabLoginButton
+              gitlabOAuthURL={gitlabURL}
+              openPopup={{
+                onLogin: handleLogin,
+                showLoading: true,
+              }}
+              // onClick={() => setLoginButtonPressed(true)}
+              disabled={gitlabURL === '' || gitlabClientId === ''}
+            />
+          </Box>
+        </>
+      )
     }
   }
 
@@ -119,58 +192,11 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
       <Stack spacing={2} sx={{
         marginBottom: '10px',
       }}>
-        <Box>
-          <List>
-            { gitlabs.map((gitlab, index) => (
-              <ListItemButton
-                key={gitlab.name}
-                selected={selectedGitlab?.index === index}
-                onClick={() => setSelectedGitlab({
-                  index,
-                  gitlab,
-                })}
-              >
-                <ListItem
-                  // secondaryAction={
-                  //   <IconButton>
-                  //     <CheckCircleOutlineIcon color="success" />
-                  //   </IconButton>
-                  // }
-                >
-                  <ListItemText
-                    primary={gitlab.name}
-                    secondary={gitlab.url}
-                  />
-                </ListItem>
-              </ListItemButton>
-            )) }
-          </List>
-        </Box>
-        <Box>
-          <TextField label="Client-ID" variant="outlined" fullWidth value={gitlabClientId} onChange={event => setGitlabClientId(event.currentTarget.value)} />
-        </Box>
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'center',
-        }}>
-          <GitlabLoginButton
-            gitlabOAuthURL={gitlabURL}
-            openPopup={{
-              onLogin: handleLogin,
-              showLoading: true,
-            }}
-            // onClick={() => setLoginButtonPressed(true)}
-            disabled={gitlabURL === '' || gitlabClientId === ''}
-          />
-        </Box>
-        <AlertCollapse open={loginAlert.show} title={loginAlert.title} severity={loginAlert.severity} onClose={() => setLoginAlert({
-            ...loginAlert,
-            show: false,
-          })
-        }>
-          { loginAlert.message }
-        </AlertCollapse>
+        { getFormComponent() }
       </Stack>
+      <AlertCollapse open={loginAlert !== null} title={loginAlert?.title} severity={loginAlert?.severity}>
+        { loginAlert?.message }
+      </AlertCollapse>
     </>
   )
 }
