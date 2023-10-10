@@ -8,7 +8,7 @@ import {
   Stack,
   Backdrop, CircularProgress,
 } from '@mui/material'
-import React, { useCallback, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import SetupGitlabsForm, { GitlabsListData } from '../components/forms/setup/SetupGitlabsForm.tsx'
 import Button from '@mui/material/Button'
@@ -48,36 +48,10 @@ export default function Setup() {
   })
   const [isStageReady, setIsStageReady] = useState<boolean>(false)
   const navigate = useNavigate()
-  const getSetupStageForm = useCallback(() => {
-    function setSetupStageData<T>(stageData: T) {
-      setSetupData({
-        ...setupData,
-        [setupState]: stageData
-      })
-    }
-    console.log('getSetupStageForm')
 
-    switch (setupState) {
-      case 0:
-        return <SetupGitlabsForm data={setupData['0']} setData={data => setSetupStageData<GitlabsListData[]>(data)} setIsStageReady={setIsStageReady} />
-      case 1:
-        return <SetupSuperAdminForm data={setupData['1']} gitlabs={setupData['0']} setData={data => setSetupStageData<GilapiAdmin>(data)} setIsStageReady={setIsStageReady} />
-      case 2:
-        // finishSetup()
-
-        return (
-          <Box>
-            <Typography variant="h4" align="center" gutterBottom>Setup...</Typography>
-            <Backdrop
-              sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-              open={true}
-            >
-              <CircularProgress color="inherit" />
-            </Backdrop>
-          </Box>
-        )
-      default:
-        return <Navigate to="/login" replace />
+  useEffect(() => {
+    if (setupState === Object.keys(setupData).length) {
+      console.log('FINISH SETUP')
     }
   }, [setupData, setupState])
 
@@ -93,6 +67,35 @@ export default function Setup() {
     navigate('/', {
       replace: true,
     })
+  }
+
+  function getSetupStageForm() {
+    switch (setupState) {
+      case 0:
+        return <SetupGitlabsForm data={setupData['0']} setData={data => setSetupData({
+          ...setupData,
+          0: data
+        })} setIsStageReady={setIsStageReady} />
+      case 1:
+        return <SetupSuperAdminForm data={setupData['1']} gitlabs={setupData['0']} setData={data => setSetupData({
+          ...setupData,
+          1: data
+        })} setIsStageReady={setIsStageReady} />
+      case 2:
+        return (
+          <Box>
+            <Typography variant="h4" align="center" gutterBottom>Setup...</Typography>
+            <Backdrop
+              sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={true}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
+          </Box>
+        )
+      default:
+        return <Navigate to="/login" replace />
+    }
   }
 
   return (
