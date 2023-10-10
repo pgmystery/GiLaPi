@@ -52,6 +52,7 @@ export default function Setup() {
   useEffect(() => {
     if (setupState === Object.keys(setupData).length) {
       console.log('FINISH SETUP')
+      console.log(setupData)
     }
   }, [setupData, setupState])
 
