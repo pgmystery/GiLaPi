@@ -21,6 +21,9 @@ export default function Redirect() {
     const gitlabFetcher = new GitlabFetcher(gitlabURI)
 
     const requestToken = async () => {
+      console.log(codeData)
+      console.log(clientId)
+      console.log(isLoggedIn)
       if (codeData && clientId && !isLoggedIn) {
 
         // const gitlabURL = `http://192.168.1.2:8080/oauth/token/?client_id=${clientId}&code=${codeData}&grant_type=authorization_code&redirect_uri=http://localhost:3000/oauth/redirect`
@@ -31,12 +34,13 @@ export default function Redirect() {
           const accessTokenData = await gitlabFetcher.requestAccessToken(
             clientId,
             codeData,
-            'http://localhost:3000/oauth/redirect'
+            'http://localhost:3000/oauth/redirect'  // TODO
           )
 
           if ('error' in accessTokenData) {
             if (window.opener) {
-              window.close()
+              // window.close()
+              console.log('ERROR 1')
             }
             else {
               navigate('/login', {
@@ -57,7 +61,8 @@ export default function Redirect() {
 
           if ('error' in userData) {
             if (window.opener) {
-              window.close()
+              // window.close()
+              console.log('ERROR 2')
             }
             else {
               navigate('/login', {
@@ -117,7 +122,8 @@ export default function Redirect() {
       }
       else {
         if (window.opener) {
-          window.close()
+          console.log('ERROR 3')
+          // window.close()
         }
         else {
           redirect('/login')
@@ -134,7 +140,8 @@ export default function Redirect() {
 
   if (isLoggedIn) {
     if (window.opener) {
-      window.close()
+      // window.close()
+      console.log('IS_LOGGED_IN')
     }
     else {
       return <Navigate to="/login" replace={true} />
@@ -167,7 +174,8 @@ export default function Redirect() {
   }
   else {
     if (window.opener) {
-      window.close()
+      // window.close()
+      console.log('DONE')
     }
     else {
       return <Navigate to="/login" replace={true} />

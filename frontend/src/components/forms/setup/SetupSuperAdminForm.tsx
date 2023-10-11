@@ -50,22 +50,27 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
   const [loginAlert, setLoginAlert] = useState<LoginAlert | null>(null)
 
   useEffect(() => {
-    if (selectedGitlab?.gitlab.url && gitlabClientId !== '') {
-      const { redirectURI } = authState
-      if (redirectURI) {
-        gitlabFetcher.gitlabURI = selectedGitlab?.gitlab.url
-        const gitlabURL = gitlabFetcher.getAuthorizeURL(gitlabClientId, redirectURI, [
-          'api',
-          'read_user',
-          'read_api',
-          'read_repository',
-          'profile',
-          'sudo',
-          'write_repository',
-        ])
+    console.log('TEST')
+    console.log(selectedGitlab)
+    console.log(gitlabClientId)
+    if (selectedGitlab && selectedGitlab.gitlab.url && gitlabClientId !== '') {
+      console.log('TEST2')
+      console.log(selectedGitlab)
 
-        setGitlabURL(gitlabURL)
-      }
+      gitlabFetcher.gitlabURI = selectedGitlab.gitlab.url
+      const gitlabURL = gitlabFetcher.getAuthorizeURL(gitlabClientId, selectedGitlab.gitlab.gilapiUrl, [
+        'api',
+        'read_user',
+        'read_api',
+        'read_repository',
+        'profile',
+        'sudo',
+        'write_repository',
+      ])
+
+      console.log(gitlabURL)
+
+      setGitlabURL(gitlabURL)
     }
   }, [selectedGitlab, gitlabClientId, authState])
 
@@ -177,8 +182,7 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
                 onLogin: handleLogin,
                 showLoading: true,
               }}
-              // onClick={() => setLoginButtonPressed(true)}
-              disabled={gitlabURL === '' || gitlabClientId === ''}
+              disabled={selectedGitlab?.index === null || gitlabClientId === ''}
             />
           </Box>
         </>

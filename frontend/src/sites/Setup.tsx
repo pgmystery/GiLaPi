@@ -36,7 +36,7 @@ export interface SetupStageFormProps<T> {
 
 const setupStageLabels = [
   'Add Gitlab environments',
-  'Set GiLaPi-Admin'
+  'Set GiLaPi-Admin',
 ]
 
 

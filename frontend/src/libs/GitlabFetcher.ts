@@ -470,6 +470,12 @@ export default class GitlabFetcher {
   }
 
   getAuthorizeURL(clientId: string, redirectURI: string, scope: string[]) {
+    const redirectURLEnd = '/oauth/redirect'
+
+    if (!redirectURI.endsWith(redirectURLEnd)) {
+      redirectURI = redirectURI + redirectURLEnd
+    }
+
     const scopeString = scope.join('+')
 
     return `${this.gitlabURI}/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectURI}&response_type=code&state=STATE&scope=${scopeString}`
