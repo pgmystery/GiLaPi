@@ -1,11 +1,13 @@
-# https://fastapi.tiangolo.com/tutorial/sql-databases/
-# https://www.mongodb.com/developer/languages/python/python-quickstart-fastapi/
 from fastapi.encoders import jsonable_encoder
 
 from gilapi_api.db import models, crud, schemas
 from gilapi_api.db.crud.user.gitlabs import UserGitlabs
 from gilapi_api.db.models.user import UserGitlab
 from gilapi_api.db.utils.crud_model import CRUDModel
+
+
+# https://fastapi.tiangolo.com/tutorial/sql-databases/
+# https://www.mongodb.com/developer/languages/python/python-quickstart-fastapi/
 
 
 class User(CRUDModel):
@@ -31,8 +33,11 @@ class User(CRUDModel):
 
         return created_user
 
-    async def get(self, username: str):
-        user = await self.db.find_one({"username": username})
+    async def get(self, gitlabs: list):
+        user = await self.db.find_one({"gitlabs": {
+            "url": gitlab_url,
+            "username": username,
+        }})
 
         return user
 

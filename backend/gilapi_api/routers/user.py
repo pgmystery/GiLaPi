@@ -16,9 +16,7 @@ router.include_router(projects_router)
 
 @router.post("/", response_model=schemas.user.User, status_code=status.HTTP_201_CREATED)
 async def create_user(user: schemas.user.User, crud_user: crud.user.User = Depends(crud.user.User)):
-    print("create_user")
-    print(user)
-    existing_user = await crud_user.get(username=user.username)
+    existing_user = await crud_user.get()
     print(existing_user)
 
     if existing_user:

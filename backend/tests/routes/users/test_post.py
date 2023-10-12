@@ -11,7 +11,6 @@ USERNAME = "test"
 client = TestClient(app)
 
 
-@pytest.mark.skip()
 @pytest.mark.asyncio
 async def test_users_post(mongo_client: MongoClientHelper):
     await mongo_client.drop_database()
