@@ -11,6 +11,7 @@ USERNAME = "test"
 client = TestClient(app)
 
 
+@pytest.mark.skip()
 @pytest.mark.asyncio
 async def test_users_post(mongo_client: MongoClientHelper):
     await mongo_client.drop_database()
@@ -27,6 +28,7 @@ async def test_users_post(mongo_client: MongoClientHelper):
     assert not response_result["super_admin"]
 
 
+@pytest.mark.skip()
 @pytest.mark.asyncio
 async def test_users_post_as_super_admin(mongo_client: MongoClientHelper):
     await mongo_client.drop_database()

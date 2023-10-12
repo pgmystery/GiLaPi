@@ -6,7 +6,7 @@ from gilapi_api.dependencies.setup import verify_setup
 
 router = APIRouter(
     prefix="/setup",
-    # dependencies=[Depends(verify_setup)],
+    dependencies=[Depends(verify_setup)],
 )
 
 
@@ -15,4 +15,4 @@ router = APIRouter(
 async def init_setup(setup_schema: schemas.setup.Setup, crud_setup: crud.setup.Setup = Depends(crud.setup.Setup)):
     print(setup_schema)
 
-    await crud_setup.add(setup_schema)
+    await crud_setup.create(setup_schema)

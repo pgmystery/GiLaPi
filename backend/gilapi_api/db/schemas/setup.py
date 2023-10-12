@@ -1,8 +1,9 @@
-from typing import Any
+from typing import Optional
 
 from pydantic import BaseModel, conset, Field
 
 from gilapi_api.db.schemas.gitlab import Gitlab
+
 
 class SetupAdmin(BaseModel):
     name: str
@@ -13,8 +14,8 @@ class SetupAdmin(BaseModel):
 
 
 class SetupGitlab(Gitlab):
-    admins: None = Field(None, exclude=True)
-    admin: SetupAdmin
+    admins: None = Field(None, exclude=True)  # TODO: Is not excluding the field
+    admin: Optional[SetupAdmin] = None
 
     class Config:
         frozen = True

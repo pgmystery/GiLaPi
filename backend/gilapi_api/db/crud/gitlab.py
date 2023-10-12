@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import Any
 
 from fastapi import HTTPException
@@ -8,7 +9,7 @@ from gilapi_api.db import schemas, models
 from gilapi_api.db.utils.crud_model import CRUDModel
 
 
-class Gitlab(CRUDModel):
+class Gitlab(CRUDModel, ABC):
     def __init__(self, mongo_client=None):
         super().__init__("gitlabs", mongo_client=mongo_client)
 
@@ -36,7 +37,10 @@ class Gitlab(CRUDModel):
         try:
             new_gitlab = await self.db.insert_one(db_gitlab)
         except DuplicateKeyError:
-            raise HTTPException(status_code=400, detail=f"Gitlab with the name ({gitlab.name}) or url ({str(gitlab.url)}) already registered")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Gitlab with the name ({gitlab.name}) or url ({str(gitlab.url)}) already registered",
+            )
 
         created_gitlab = await self.db.find_one({"_id": new_gitlab.inserted_id})
 

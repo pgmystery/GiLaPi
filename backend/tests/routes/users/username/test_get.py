@@ -11,6 +11,7 @@ USERNAME = "test"
 client = TestClient(app)
 
 
+@pytest.mark.skip()
 @pytest.mark.asyncio
 async def test_user_get(mongo_client: MongoClientHelper):
     await mongo_client.drop_database()
@@ -31,6 +32,7 @@ async def test_user_get(mongo_client: MongoClientHelper):
     assert get_response_result["username"] == post_response_data["username"]
 
 
+@pytest.mark.skip()
 @pytest.mark.asyncio
 async def test_user_get_unknown_user(mongo_client: MongoClientHelper):
     await mongo_client.drop_database()

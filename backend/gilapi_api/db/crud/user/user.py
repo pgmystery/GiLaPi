@@ -4,6 +4,7 @@ from fastapi.encoders import jsonable_encoder
 
 from gilapi_api.db import models, crud, schemas
 from gilapi_api.db.crud.user.gitlabs import UserGitlabs
+from gilapi_api.db.models.user import UserGitlab
 from gilapi_api.db.utils.crud_model import CRUDModel
 
 
@@ -13,9 +14,16 @@ class User(CRUDModel):
         self.user_gitlabs = UserGitlabs(mongo_client=mongo_client)
 
     async def create(self, user: schemas.user.User):
+        gitlabs = []
+        for gitlab in user.gitlabs:
+            gitlabs.append(UserGitlab(
+                url=gitlab.url,
+                username=gitlab.username,
+                gitlab_oauth_client_id=gitlab.gitlab_oauth_client_id,
+            ))
+
         db_user = jsonable_encoder(models.User(
-            username=user.username,
-            super_admin=user.super_admin,
+            gitlabs=gitlabs,
         ))
 
         new_user = await self.db.insert_one(db_user)
