@@ -28,8 +28,15 @@ class Setup(CRUDModel, ABC):
     async def create(self, setup_data: SetupSchema):
         user_gitlabs: list[UserGitlabSchema] = []
 
+        # Check if at least one gitlab with an admin
+        if all(gitlab.admin is None for gitlab in setup_data.gitlabs):
+            raise HTTPException(
+                status_code=400,
+                detail="Need at least one gitlab with an user to set a gilapi-admin",
+            )
+
         for gitlab in setup_data.gitlabs:
-            admins = set() if gitlab.admin is None else set(gitlab.admin.name)
+            admins = set() if gitlab.admin is None else {gitlab.admin.name}
 
             gitlab_db = await self.crud.gitlab.create(gitlab=GitlabSchema(
                 name=gitlab.name,

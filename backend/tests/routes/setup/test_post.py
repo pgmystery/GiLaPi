@@ -41,3 +41,40 @@ async def test_setup_post_skip_setup_already_finished(mongo_client: MongoClientH
     response2 = client.post("/setup", json=post_mock_data)
 
     assert response2.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_setup_post_no_admin_user(mongo_client: MongoClientHelper):
+    await mongo_client.drop_database()
+
+    gitlabs_without_user = {
+        "gitlabs": [
+            {
+                "name": "test",
+                "url": "http://localhost:8080",
+            },
+        ],
+    }
+
+    response = client.post("/setup", json=gitlabs_without_user)
+
+    assert response.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_setup_post_error(mongo_client: MongoClientHelper):
+    await mongo_client.drop_database()
+
+    gitlabs_without_user = {
+        "gitlabs": [
+            {
+                "name": "test",
+                "url": "http://localhost:8080",
+                "admin": {}
+            },
+        ],
+    }
+
+    response = client.post("/setup", json=gitlabs_without_user)
+
+    assert response.status_code == 422
