@@ -6,7 +6,6 @@ from gilapi_api.db.models.user import UserRole
 
 class User(BaseModel):
     username: str
-    super_admin: bool = False
     # gitlabs: list[UserGitlab] = []
 
 

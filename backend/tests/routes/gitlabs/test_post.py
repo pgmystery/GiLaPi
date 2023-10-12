@@ -29,7 +29,7 @@ async def test_gitlabs_post_without_admins(mongo_client: MongoClientHelper):
         "url": "http://localhost/8080",
     })
 
-    assert response.status_code == 422
+    assert response.status_code == 200
 
 
 @pytest.mark.asyncio

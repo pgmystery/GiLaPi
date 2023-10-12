@@ -1,4 +1,3 @@
-from abc import ABC
 from typing import Any
 
 from fastapi import HTTPException
@@ -9,7 +8,7 @@ from gilapi_api.db import schemas, models
 from gilapi_api.db.utils.crud_model import CRUDModel
 
 
-class Gitlab(CRUDModel, ABC):
+class Gitlab(CRUDModel):
     def __init__(self, mongo_client=None):
         super().__init__("gitlabs", mongo_client=mongo_client)
 

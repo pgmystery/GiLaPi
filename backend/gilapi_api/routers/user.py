@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from gilapi_api.db import schemas, crud
-from gilapi_api.routes.projects import router as projects_router
+from gilapi_api.routers.projects import router as projects_router
 
 
 # https://fastapi.tiangolo.com/tutorial/sql-databases/

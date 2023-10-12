@@ -4,11 +4,11 @@ from pydantic import HttpUrl, BaseModel, Field, conset
 class Gitlab(BaseModel):
     name: str
     url: HttpUrl
-    admins: conset(str, min_length=1)
+    admins: conset(str) = set()
 
 
 class GitlabResponse(Gitlab):
-    admins: conset(str, min_length=1) = Field(exclude=True)
+    admins: conset(str) = Field(exclude=True)
 
     # id: str = Field(validation_alias="_id")
     #
