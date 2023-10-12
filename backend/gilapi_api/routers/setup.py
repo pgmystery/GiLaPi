@@ -13,6 +13,4 @@ router = APIRouter(
 # @router.post("/", response_model=schemas.setup.Setup)
 @router.post("/")
 async def init_setup(setup_schema: schemas.setup.Setup, crud_setup: crud.setup.Setup = Depends(crud.setup.Setup)):
-    print(setup_schema)
-
     await crud_setup.create(setup_schema)
