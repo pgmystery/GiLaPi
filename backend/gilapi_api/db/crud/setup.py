@@ -41,7 +41,8 @@ class Setup(CRUDModel, ABC):
             gitlab_db = await self.crud.gitlab.create(gitlab=GitlabSchema(
                 name=gitlab.name,
                 url=gitlab.url,
-                admins=admins
+                redirect_url=gitlab.redirect_url,
+                admins=admins,
             ))
 
             if gitlab_db is None:

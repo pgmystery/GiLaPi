@@ -27,6 +27,7 @@ async def test_gitlabs_post_without_admins(mongo_client: MongoClientHelper):
     response = client.post("/gitlabs", json={
         "name": "test",
         "url": "http://localhost/8080",
+        "redirect_url": "http://localhost:3000",
     })
 
     assert response.status_code == 200

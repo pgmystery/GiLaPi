@@ -4,11 +4,13 @@ from fastapi.testclient import TestClient
 from gilapi_api.main import app
 from tests.conftest import MongoClientHelper
 
+
 post_mock_data = {
     "gitlabs": [
         {
             "name": "test",
             "url": "http://localhost:8080",
+            "redirect_url": "http://localhost:300",
             "admin": {
                 "name": "root",
                 "client_id": "abc123",
@@ -52,6 +54,7 @@ async def test_setup_post_no_admin_user(mongo_client: MongoClientHelper):
             {
                 "name": "test",
                 "url": "http://localhost:8080",
+                "redirect_url": "http://localhost:300",
             },
         ],
     }

@@ -28,6 +28,7 @@ class Gitlab(CRUDModel, ABC):
         db_gitlab = jsonable_encoder(models.Gitlab(
             name=gitlab.name,
             url=gitlab.url,
+            redirect_url=gitlab.redirect_url,
             admins=gitlab.admins,
         ))
 
