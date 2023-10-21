@@ -6,15 +6,16 @@ export interface AuthContextType {
 export enum LoginState {
   LOGIN,
   LOGOUT,
+  RELOAD,
 }
 
-interface AuthAction {
+export interface AuthAction {
   type: LoginState
   payload?: AuthState
 }
 
 export interface AuthState {
-  gitlabURI: string
+  gitlabURI?: string
   isLoggedIn: boolean
   user: AuthUser | null
   clientId?: string
@@ -67,7 +68,17 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
       return {
         ...state,
         isLoggedIn: false,
-        user: null
+        user: null,
+      }
+    }
+    case LoginState.RELOAD: {
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === 'true' || false
+      const user = JSON.parse(localStorage.getItem("user") || '{}') || null
+
+      return {
+        ...state,
+        isLoggedIn: isLoggedIn,
+        user: user,
       }
     }
     default:

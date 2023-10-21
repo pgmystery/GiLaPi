@@ -341,6 +341,12 @@ const defaultFetchOptions: GitlabFetcherFetchOptions = {
   isJSON: true,
 }
 
+export function GitlabFetcherDataError(data: GitlabFetcherErrorData) {
+  const { error: errorName, error_description: errorDescription } = data
+
+  return new DOMException(errorDescription, errorName)
+}
+
 export default class GitlabFetcher {
   public gitlabURI: string
   public accessToken?: string
@@ -360,6 +366,8 @@ export default class GitlabFetcher {
   }
 
   async requestAccessToken(clientId: string, code: string, redirectURL: string) {
+    if (!redirectURL.endsWith('/oauth/redirect')) redirectURL = `${new URL(redirectURL).origin}/oauth/redirect`
+
     const url = `${this.gitlabURI}/oauth/token?client_id=${clientId}&code=${code}&grant_type=authorization_code&redirect_uri=${redirectURL}`
 
     const { result } = await this._fetch<GitlabFetcherAccessTokenData>(url, {
@@ -396,7 +404,7 @@ export default class GitlabFetcher {
   async getProjectsPipeline(projectId: number, options?: GetProjectsPipelineOptions) {
     const pipelines = await this.get<GitlabFetcherProjectPipelineInfo[]>(`projects/${projectId}/pipelines`)
 
-    if ('error' in pipelines) return pipelines
+    if ('error' in pipelines) throw GitlabFetcherDataError(pipelines)
 
     if (options) {
       if (Object.keys(options).length > 0) {
@@ -470,6 +478,12 @@ export default class GitlabFetcher {
   }
 
   getAuthorizeURL(clientId: string, redirectURI: string, scope: string[]) {
+    const redirectURLEnd = '/oauth/redirect'
+
+    if (!redirectURI.endsWith(redirectURLEnd)) {
+      redirectURI = redirectURI + redirectURLEnd
+    }
+
     const scopeString = scope.join('+')
 
     return `${this.gitlabURI}/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectURI}&response_type=code&state=STATE&scope=${scopeString}`

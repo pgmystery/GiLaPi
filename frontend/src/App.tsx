@@ -9,6 +9,8 @@ import Logout from './sites/Logout.tsx'
 import LoggedInLayout from './components/layout/LoggedInLayout.tsx'
 import Pipelines from './sites/project/Pipelines.tsx'
 import pipelinesLoader from './sites/project/PipelinesLoader.tsx'
+import { loginLoader } from './sites/loaders/LoginLoader.tsx'
+import Setup from './sites/Setup.tsx'
 
 
 export const AuthContext = createContext<AuthContextType>({
@@ -22,8 +24,13 @@ function App() {
 
   const router = createBrowserRouter([
     {
+      path: '/setup',
+      element: <Setup />,
+    },
+    {
       path: '/login',
       element: <Login />,
+      loader: loginLoader,
     },
     {
       path: '/logout',

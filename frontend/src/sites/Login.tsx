@@ -1,19 +1,11 @@
-import {
-  Alert,
-  AlertColor,
-  AlertTitle,
-  Backdrop,
-  Box,
-  Button,
-  CircularProgress,
-  Collapse,
-  Container
-} from '@mui/material'
+import { Alert, AlertColor, AlertTitle, Backdrop, Box, CircularProgress, Collapse, Container } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../App.tsx'
-import { Navigate, useLocation } from 'react-router-dom'
-import GitlabLogo from '../resources/GitlabLogo.tsx'
+import { Navigate, useLoaderData, useLocation } from 'react-router-dom'
 import GitlabFetcher from '../libs/GitlabFetcher.ts'
+import { LoaderLoginData } from './loaders/LoginLoader.tsx'
+import GitlabLoginButton from '../components/button/GitlabLoginButton.tsx'
+import { LoginState } from '../store/reducer.tsx'
 
 
 export interface AlertDataType {
@@ -28,7 +20,8 @@ interface LocationType {
 
 
 export default function Login() {
-  const { state: authState } = useContext(AuthContext)
+  const { state: authState, dispatch } = useContext(AuthContext)
+  const { gitlabs } = useLoaderData() as LoaderLoginData
   const [alertData, setAlertData] = useState<AlertDataType | null>(null)
   const [showAlert, setShowAlert] = useState<boolean>(false)
   const { state } = useLocation() as LocationType
@@ -42,6 +35,14 @@ export default function Login() {
       setShowAlert(true)
     }
   }, [state])
+
+  if (gitlabs.length === 0) {
+    dispatch({
+      type: LoginState.LOGOUT,
+    })
+
+    return <Navigate to={ '/setup' }/>
+  }
 
   const {clientId, redirectURI, isLoggedIn, gitlabURI} = authState
 
@@ -91,6 +92,23 @@ export default function Login() {
     }
   }
 
+  function handleLogin(loginSuccessed: boolean) {
+    if (loginSuccessed) {
+      dispatch({
+        type: LoginState.RELOAD,
+      })
+    }
+    else {
+      setAlertData({
+        severity: 'error',
+        message: 'Login error',
+        title: 'Login error'
+      })
+      setShowAlert(true)
+      setLoginButtonPressed(false)
+    }
+  }
+
   return (
     <>
       <Collapse in={showAlert}>
@@ -105,16 +123,14 @@ export default function Login() {
             paddingBottom: '20px',
           }}
         >
-          <Button
-            variant="contained"
-            href={gitlabOAuthURL}
-            startIcon={<GitlabLogo />}
-            size="large"
+          <GitlabLoginButton
+            gitlabOAuthURL={gitlabOAuthURL}
+            // openPopup={{
+            //   onLogin: handleLogin
+            // }}
             onClick={() => setLoginButtonPressed(true)}
             disabled={loginButtonPressed}
-          >
-            Login with GitLab
-          </Button>
+          />
         </Box>
       </Container>
       { showLoading() }
