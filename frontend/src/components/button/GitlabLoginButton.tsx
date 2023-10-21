@@ -4,10 +4,13 @@ import GitlabLogo from '../../resources/GitlabLogo.tsx'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../App.tsx'
 import { LoginState } from '../../store/reducer.tsx'
+import SimpleWindowMessageClient from '../../libs/simpleWindowMessageClient.ts'
 
 
 export interface GitlabLoginButtonProps extends ButtonProps {
   gitlabOAuthURL: string
+  clientId?: string
+  redirectURL: string
   openPopup?: GitlabLoginButtonPopupOptions
 }
 
@@ -35,8 +38,9 @@ const defaultLoginPopupOptions: GitlabLoginButtonPopupWindowOptions = {
 
 type PopupWindowState = null | 'open' | 'closed'
 
+export type PopupWindowPostMessageRequests = 'clientId' | 'gitlabURL' | 'redirectURL'
 
-export default function GitlabLoginButton({ gitlabOAuthURL, openPopup, onClick, children, ...props }: GitlabLoginButtonProps) {
+export default function GitlabLoginButton({ gitlabOAuthURL, clientId, redirectURL, openPopup, onClick, children, ...props }: GitlabLoginButtonProps) {
   const { state: authState, dispatch } = useContext(AuthContext)
   const [loginPopupWindow, setLoginPopupWindow] = useState<Window | null>(null)
   const [loginPopupWindowState, setLoginPopupWindowState] = useState<PopupWindowState>(null)
@@ -68,7 +72,7 @@ export default function GitlabLoginButton({ gitlabOAuthURL, openPopup, onClick, 
       }, 500)
     }, [dispatch, loginPopupWindow, loginPopupWindowState])
 
-  function handleClick(event:  React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  async function handleClick(event:  React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     const {
       top,
       left,
@@ -77,6 +81,40 @@ export default function GitlabLoginButton({ gitlabOAuthURL, openPopup, onClick, 
       height,
     } = {...defaultLoginPopupOptions, ...openPopup?.window}
     const popup = window.open(gitlabOAuthURL, title, `width=${width},height=${height},left=${left},top=${top}`)
+
+    if (!popup) return
+
+    const simpleWindowMessageClient = new SimpleWindowMessageClient(popup, window)
+
+    simpleWindowMessageClient.getOnce<PopupWindowPostMessageRequests | PopupWindowPostMessageRequests[]>('accessToken').then(({ event, message, response }) => {
+      if (event.origin !== window.location.origin) return
+      if (!popup) return
+      if (!clientId) return popup.close()
+
+      const responseData: {[key: string]: string} = {}
+      const handleResponseData = (messageType: string) => {
+        switch (messageType) {
+          case 'clientId':
+            return clientId
+          case 'gitlabURL':
+            return gitlabOAuthURL
+          case 'redirectURL':
+            return redirectURL
+          default:
+            throw new Error()
+        }
+      }
+
+      if (typeof message === 'string') {
+        responseData[message] = handleResponseData(message)
+      }
+      else if (Array.isArray(message)) {
+        message.forEach(i => responseData[i] = handleResponseData(i))
+      }
+
+      response(responseData)
+    })
+
     setLoginPopupWindow(popup)
     setLoginPopupWindowState('open')
 

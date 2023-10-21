@@ -15,7 +15,7 @@ export interface AuthAction {
 }
 
 export interface AuthState {
-  gitlabURI: string
+  gitlabURI?: string
   isLoggedIn: boolean
   user: AuthUser | null
   clientId?: string

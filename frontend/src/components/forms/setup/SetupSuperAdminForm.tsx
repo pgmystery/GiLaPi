@@ -1,4 +1,4 @@
-import { SetupStageFormProps } from '../../../sites/Setup.tsx'
+import { SetupStageFormProps } from '../../../sites/.old/Setup.tsx'
 import { GitlabsListData } from './SetupGitlabsForm.tsx'
 import { Box, Button, ListItem, ListItemButton, Stack, TextField } from '@mui/material'
 import List from '@mui/material/List'
@@ -47,6 +47,7 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
   })
   const [gitlabClientId, setGitlabClientId] = useState<string>('')
   const [gitlabURL, setGitlabURL] = useState<string>('')
+  const [redirectURL, setRedirectURL] = useState<string>('')
   const [loginAlert, setLoginAlert] = useState<LoginAlert | null>(null)
 
   useEffect(() => {
@@ -71,6 +72,7 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
       console.log(gitlabURL)
 
       setGitlabURL(gitlabURL)
+      setRedirectURL(selectedGitlab.gitlab.gilapiUrl)
     }
   }, [selectedGitlab, gitlabClientId, authState])
 
@@ -178,6 +180,8 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
           }}>
             <GitlabLoginButton
               gitlabOAuthURL={gitlabURL}
+              clientId={gitlabClientId}
+              redirectURL={redirectURL}
               openPopup={{
                 onLogin: handleLogin,
                 showLoading: true,
