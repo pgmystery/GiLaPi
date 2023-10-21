@@ -40,7 +40,7 @@ const gitlabFetcher = new GitlabFetcher('')
 
 export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gitlabs }: SetupSuperAdminForm) {
   const {state: authState, dispatch} = useContext(AuthContext)
-  const { isLoggedIn, user } = authState
+  const { isLoggedIn: initIsLoggedIn, user } = authState
   const [selectedGitlab, setSelectedGitlab] = useState<SelectedGitlab | null>({
     index: 0,
     gitlab: gitlabs[0],
@@ -49,6 +49,7 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
   const [gitlabURL, setGitlabURL] = useState<string>('')
   const [redirectURL, setRedirectURL] = useState<string>('')
   const [loginAlert, setLoginAlert] = useState<LoginAlert | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(initIsLoggedIn)
 
   useEffect(() => {
     if (selectedGitlab && selectedGitlab.gitlab.url && gitlabClientId !== '') {
@@ -69,30 +70,45 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
   }, [selectedGitlab, gitlabClientId, authState])
 
   useEffect(() => {
-    setIsStageReady(false)
+    if (!initIsLoggedIn) setIsLoggedIn(false)
+  }, [initIsLoggedIn])
 
-    if (selectedGitlab && isLoggedIn && user) {
-      setData({
-        clientId: gitlabClientId,
-        gitlab: selectedGitlab.gitlab,
-        username: user.username,
-      })
+  useEffect(() => {
+    if (data.gitlab) {
+      const dataGitlabStillInGitlabs = gitlabs.some(gitlab => gitlab.name === data.gitlab.name && gitlab.url === data.gitlab.url)
 
-      setLoginAlert({
-        severity: 'success',
-        title: 'Login success',
-        message: 'Login was successfully',
-      })
-
-      setIsStageReady(true)
+      if (!dataGitlabStillInGitlabs) {
+        setIsStageReady(false)
+        setIsLoggedIn(false)
+        setData({})
+        dispatch({
+          type: LoginState.LOGOUT,
+        })
+      }
     }
-  }, [isLoggedIn, user, selectedGitlab, gitlabClientId])
+  }, [gitlabs, data, setIsStageReady, setData, dispatch])
 
   function handleLogin(loginSuccessed: boolean) {
     if (loginSuccessed) {
       dispatch({
         type: LoginState.RELOAD,
       })
+
+      if (selectedGitlab && user) {
+        setData({
+          clientId: gitlabClientId,
+          gitlab: selectedGitlab.gitlab,
+          username: user.username,
+        })
+
+        setLoginAlert({
+          severity: 'success',
+          title: 'Login success',
+          message: 'Login was successfully',
+        })
+
+        setIsStageReady(true)
+      }
     }
     else {
       setLoginAlert({
@@ -101,6 +117,8 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
         message: 'Login to the gitlab failed'
       })
     }
+
+    setIsLoggedIn(loginSuccessed)
   }
 
   function getGitlabsListComponent() {
@@ -133,12 +151,14 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
         <>
           <Box>
             <List>
-              <ListItem selected>
-                <ListItemText
-                  primary={data.gitlab.name}
-                  secondary={data.gitlab.url}
-                />
-              </ListItem>
+              <ListItemButton selected>
+                <ListItem>
+                  <ListItemText
+                    primary={data.gitlab?.name}
+                    secondary={data.gitlab?.url}
+                  />
+                </ListItem>
+              </ListItemButton>
             </List>
           </Box>
           <Box sx={{display: 'flex', justifyContent: 'center'}}>

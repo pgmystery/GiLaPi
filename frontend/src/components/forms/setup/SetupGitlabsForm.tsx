@@ -92,7 +92,7 @@ export default function SetupGitlabsForm({ data, setData, setIsStageReady }: Set
         <Stack component="form" spacing={2} onSubmit={addItemToList}>
           <TextField label="Name" variant="outlined" required autoFocus value={nameFieldText} onChange={e => setNameFieldText(e.target.value)} />
           <TextField label="URL" variant="outlined" type="url" required value={urlFieldText} onChange={e => setUrlFieldText(e.target.value)} />
-          <TextField label="GiLaPi-URL" variant="outlined" type="url" required value={gilapiUrlFieldText} onChange={e => setGilapiUrlFieldText(e.target.value)} />
+          <TextField label="GiLaPi-URL for OAuth redirect" variant="outlined" type="url" required value={gilapiUrlFieldText} onChange={e => setGilapiUrlFieldText(e.target.value)} />
           <Button variant="contained" endIcon={<AddIcon />} type="submit" disabled={!(nameFieldText.length > 0 && urlFieldText.length > 0 && gilapiUrlFieldText.length > 0)}>Add GitLab</Button>
         </Stack>
       </Box>
