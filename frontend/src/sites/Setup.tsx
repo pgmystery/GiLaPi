@@ -85,7 +85,7 @@ export default function Setup() {
       case 2:
         return (
           <Box>
-            <Typography variant="h4" align="center" gutterBottom>Setup...</Typography>
+            <Typography variant="h4" align="center" gutterBottom>Finishing Setup...</Typography>
             <Backdrop
               sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
               open={true}
