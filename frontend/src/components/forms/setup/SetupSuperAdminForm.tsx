@@ -1,4 +1,4 @@
-import { SetupStageFormProps } from '../../../sites/.old/Setup.tsx'
+import { SetupStageFormProps } from '../../../sites/Setup.tsx'
 import { GitlabsListData } from './SetupGitlabsForm.tsx'
 import { Box, Button, ListItem, ListItemButton, Stack, TextField } from '@mui/material'
 import List from '@mui/material/List'
