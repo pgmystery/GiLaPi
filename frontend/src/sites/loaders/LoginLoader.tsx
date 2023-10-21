@@ -1,4 +1,4 @@
-import GiLaPiClient from '../../libs/gilapiClient.ts'
+import GiLaPiClient from '../../libs/GilapiClient.ts'
 
 
 export interface LoaderLoginData {

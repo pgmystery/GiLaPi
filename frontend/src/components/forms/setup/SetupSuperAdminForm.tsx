@@ -51,13 +51,7 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
   const [loginAlert, setLoginAlert] = useState<LoginAlert | null>(null)
 
   useEffect(() => {
-    console.log('TEST')
-    console.log(selectedGitlab)
-    console.log(gitlabClientId)
     if (selectedGitlab && selectedGitlab.gitlab.url && gitlabClientId !== '') {
-      console.log('TEST2')
-      console.log(selectedGitlab)
-
       gitlabFetcher.gitlabURI = selectedGitlab.gitlab.url
       const gitlabURL = gitlabFetcher.getAuthorizeURL(gitlabClientId, selectedGitlab.gitlab.gilapiUrl, [
         'api',
@@ -68,8 +62,6 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
         'sudo',
         'write_repository',
       ])
-
-      console.log(gitlabURL)
 
       setGitlabURL(gitlabURL)
       setRedirectURL(selectedGitlab.gitlab.gilapiUrl)
@@ -95,11 +87,6 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
       setIsStageReady(true)
     }
   }, [isLoggedIn, user, selectedGitlab, gitlabClientId])
-
-  useEffect(() => {
-    console.log('DATA')
-    console.log(data)
-  }, [data])
 
   function handleLogin(loginSuccessed: boolean) {
     if (loginSuccessed) {
@@ -143,19 +130,31 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
   function getFormComponent() {
     if (isLoggedIn) {
       return (
-        <Box sx={{display: 'flex', justifyContent: 'center'}}>
-          <Button
-            variant="contained"
-            startIcon={<GitlabLogo />}
-            size="large"
-            onClick={() => {
-              setLoginAlert(null)
-              dispatch({type: LoginState.LOGOUT})
-            }}
-          >
-            Logout
-          </Button>
-        </Box>
+        <>
+          <Box>
+            <List>
+              <ListItem selected>
+                <ListItemText
+                  primary={data.gitlab.name}
+                  secondary={data.gitlab.url}
+                />
+              </ListItem>
+            </List>
+          </Box>
+          <Box sx={{display: 'flex', justifyContent: 'center'}}>
+            <Button
+              variant="contained"
+              startIcon={<GitlabLogo />}
+              size="large"
+              onClick={() => {
+                setLoginAlert(null)
+                dispatch({type: LoginState.LOGOUT})
+              }}
+            >
+              Logout
+            </Button>
+          </Box>
+        </>
       )
     }
     else {
