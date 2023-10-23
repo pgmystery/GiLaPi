@@ -16,15 +16,14 @@ router.include_router(projects_router)
 
 @router.post("/", response_model=schemas.user.User, status_code=status.HTTP_201_CREATED)
 async def create_user(user: schemas.user.User, crud_user: crud.user.User = Depends(crud.user.User)):
-    existing_user = await crud_user.get()
-    print(existing_user)
+    existing_user = await crud_user.get(user.gitlabs)
 
-    if existing_user:
-        raise HTTPException(status_code=400, detail=f'User with the username "{user.username}" already registered')
+    if existing_user is not None:
+        raise HTTPException(status_code=400, detail=f'The User already register')
 
     new_user = await crud_user.create(user=user)
 
-    if user is None:
+    if new_user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
     return new_user

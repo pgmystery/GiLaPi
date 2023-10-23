@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 
 from gilapi_api.main import app
 from tests.conftest import MongoClientHelper
-from tests.routes.gitlabs.data import working_post_data
+from tests.routes.gitlabs.data import working_post_data_gitlabs
 
 client = TestClient(app)
 
@@ -12,7 +12,7 @@ client = TestClient(app)
 async def test_gitlabs_post(mongo_client: MongoClientHelper):
     await mongo_client.drop_database()
 
-    response = client.post("/gitlabs", json=working_post_data)
+    response = client.post("/gitlabs", json=working_post_data_gitlabs)
 
     assert response.status_code == 200
 

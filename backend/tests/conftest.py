@@ -1,3 +1,4 @@
+import asyncio
 from time import sleep
 
 import pytest
@@ -10,6 +11,11 @@ import docker
 from gilapi_api.db import get_mongo_client
 from gilapi_api.db.db import MongoClient
 from gilapi_api.settings import get_settings
+
+
+@pytest.fixture(scope="session")
+def event_loop():
+    return asyncio.get_event_loop()
 
 
 class MongoClientHelper:
