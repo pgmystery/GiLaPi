@@ -1,9 +1,14 @@
 package crud
 
 type Setup struct {
+	db
 }
 
-func (setup *Setup) create() {
+func NewSetup() {
+	return Setup{}
+}
+
+func (setup *Setup) Create() {
 
 }
 
