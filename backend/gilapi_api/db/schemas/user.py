@@ -11,3 +11,12 @@ class UserGitlab(BaseModel):
 
 class User(BaseModel):
     gitlabs: conlist(UserGitlab, min_length=1)
+
+
+class UserGitlabResponse(BaseModel):
+    url: HttpUrl
+    username: str
+
+
+class UserResponse(BaseModel):
+    gitlabs: conlist(UserGitlabResponse, min_length=1)

@@ -20,7 +20,6 @@ class TestUserPost:
         await mongo_client.drop_database()
         client.post("/gitlabs", json=working_post_data_gitlabs)
 
-    # @pytest.mark.skip()
     @pytest.mark.asyncio
     async def test_users_post(self):
         response = client.post("/users", json={
@@ -37,22 +36,11 @@ class TestUserPost:
 
         response_result = response.json()
 
-        assert response_result["username"] == USERNAME
-
-
-    @pytest.mark.skip()
-    @pytest.mark.asyncio
-    async def test_users_post_as_super_admin(self, mongo_client: MongoClientHelper):
-        await mongo_client.drop_database()
-
-        response = client.post("/users", json={
-            "username": USERNAME,
-            "super_admin": True,
-        })
-
-        assert response.status_code == 201
-
-        response_result = response.json()
-
-        assert response_result["username"] == USERNAME
-        assert response_result["super_admin"]
+        assert response_result == {
+            "gitlabs": [
+                {
+                    "url": working_post_data_gitlabs["url"],
+                    "username": working_post_data_gitlabs["name"],
+                },
+            ],
+        }

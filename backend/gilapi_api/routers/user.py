@@ -14,7 +14,7 @@ router = APIRouter(
 router.include_router(projects_router)
 
 
-@router.post("/", response_model=schemas.user.User, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=schemas.user.UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(user: schemas.user.User, crud_user: crud.user.User = Depends(crud.user.User)):
     existing_user = await crud_user.get(user.gitlabs)
 
