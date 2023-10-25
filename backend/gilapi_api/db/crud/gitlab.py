@@ -13,12 +13,12 @@ class Gitlab(CRUDModel, ABC):
     def __init__(self, mongo_client=None):
         super().__init__("gitlabs", mongo_client=mongo_client)
 
-    async def get(self, value: Any, key: str = "name"):
+    async def read(self, value: Any, key: str = "name"):
         gitlab = await self.db.find_one({key: value})
 
         return gitlab
 
-    async def get_all(self):
+    async def read_all(self):
         db_cursor = self.db.find({})
         gitlabs = await db_cursor.to_list(length=None)
 

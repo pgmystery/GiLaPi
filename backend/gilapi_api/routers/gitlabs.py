@@ -10,14 +10,14 @@ router = APIRouter(
 
 @router.get("/", response_model=list[schemas.gitlab.GitlabResponse])
 async def get_gitlabs(crud_gitlab: crud.gitlab.Gitlab = Depends(crud.gitlab.Gitlab)):
-    gitlabs = await crud_gitlab.get_all()
+    gitlabs = await crud_gitlab.read_all()
 
     return gitlabs
 
 
 @router.get("/{name}", response_model=schemas.gitlab.GitlabResponse)
 async def get_gitlab(name: str, crud_gitlab: crud.gitlab.Gitlab = Depends(crud.gitlab.Gitlab)):
-    gitlab = await crud_gitlab.get(name, key="name")
+    gitlab = await crud_gitlab.read(name, key="name")
 
     if gitlab is None:
         raise HTTPException(status_code=404, detail="Gitlab not found")

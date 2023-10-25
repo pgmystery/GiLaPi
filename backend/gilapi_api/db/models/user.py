@@ -1,7 +1,7 @@
 from typing import Optional
 
 from bson import ObjectId
-from pydantic import conlist, HttpUrl, Field, field_validator
+from pydantic import conlist, field_validator
 
 from gilapi_api.db.utils.mongo_model import MongoModel
 
