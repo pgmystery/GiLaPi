@@ -20,11 +20,20 @@ class User(CRUDModel):
         response_gitlabs = []
 
         for gitlab in user.gitlabs:
-            gitlab_db = await self.gitlab_crud.db.find_one({
-                "url": str(gitlab.url)
-            })
+            gitlab_db = await self.gitlab_crud.read(str(gitlab.url), "url")
 
             if gitlab_db is None:
+                return
+
+            user_db = await self.db.find_one({
+                "gitlabs": {
+                    "id": gitlab_db["_id"],
+                    "username": gitlab.username,
+                }
+            })
+
+            if user_db is not None:
+                # TODO: Add the other user-gitlabs to this user-account
                 return
 
             user_gitlabs.append(UserGitlabModel(

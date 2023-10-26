@@ -31,8 +31,8 @@ async def create_user(user: UserSchema, crud_user: UserCRUD = Depends(UserCRUD))
     return new_user
 
 
-@router.get("/{gitlab_id}/{user_id}", response_model=UserSchema)
-async def get_user(gitlab_id: str, user_id: str, crud_user: UserCRUD = Depends(UserCRUD)):
+@router.get("/{user_id}", response_model=UserSchema)
+async def get_user(user_id: str, crud_user: UserCRUD = Depends(UserCRUD)):
     gitlab_crud = GitlabCRUD(mongo_client=crud_user.mongo_client)
     gitlab_db = await gitlab_crud.read(gitlab_name)
 
@@ -48,6 +48,11 @@ async def get_user(gitlab_id: str, user_id: str, crud_user: UserCRUD = Depends(U
         raise HTTPException(status_code=404, detail="User not found")
 
     return user
+
+
+@router.get("{user_id}/gitlab/{gitlab_id}", response_model=UserSchema)
+async def get_gitlab_by_id(user_id: str, gitlab_id: str, crud_user: UserCRUD = Depends(UserCRUD)):
+    pass
 
 
 # @router.post("/{username}/gitlab", response_model=UserSchema)
