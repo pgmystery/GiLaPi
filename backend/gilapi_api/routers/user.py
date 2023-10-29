@@ -18,41 +18,17 @@ router.include_router(projects_router)
 
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserSchema, crud_user: UserCRUD = Depends(UserCRUD)):
-    existing_user = await crud_user.read(user.gitlabs)
-
-    if existing_user is not None:
-        raise HTTPException(status_code=400, detail=f'The User already register')
-
-    new_user = await crud_user.create(user=user)
-
-    if new_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return new_user
+    return await crud_user.create(user=user)
 
 
-@router.get("/{user_id}", response_model=UserSchema)
+@router.get("/{user_id}", response_model=UserResponse)
 async def get_user(user_id: str, crud_user: UserCRUD = Depends(UserCRUD)):
-    gitlab_crud = GitlabCRUD(mongo_client=crud_user.mongo_client)
-    gitlab_db = await gitlab_crud.read(gitlab_name)
-
-    gitlabs = [
-        UserGitlabSchema(
-            url=gitlab_db["url"],
-            username=username,
-        )
-    ]
-    user = await crud_user.read(gitlabs)
-
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return user
+    return await crud_user.read(user_id)
 
 
-@router.get("{user_id}/gitlab/{gitlab_id}", response_model=UserSchema)
-async def get_gitlab_by_id(user_id: str, gitlab_id: str, crud_user: UserCRUD = Depends(UserCRUD)):
-    pass
+# @router.get("{user_id}/gitlab/{gitlab_id}", response_model=UserSchema)
+# async def get_gitlab_by_id(user_id: str, gitlab_id: str, crud_user: UserCRUD = Depends(UserCRUD)):
+#     pass
 
 
 # @router.post("/{username}/gitlab", response_model=UserSchema)

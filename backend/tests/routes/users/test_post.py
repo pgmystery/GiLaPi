@@ -1,6 +1,6 @@
 import pytest
+from bson import ObjectId
 
-from tests.routes.gitlabs.data import working_post_data_gitlabs
 from tests.routes.users.mock.utils import TestUser
 
 
@@ -11,7 +11,7 @@ class TestUserPost(TestUser):
             "gitlabs": [
                 {
                     "username": self.USERNAME,
-                    "url": working_post_data_gitlabs["url"],
+                    "url": self.mock_gitlab["url"],
                     "gitlab_oauth_client_id": "test",
                 }
             ]
@@ -21,11 +21,16 @@ class TestUserPost(TestUser):
 
         response_result = response.json()
 
+        assert ObjectId.is_valid(response_result["id"])
+
         assert response_result == {
+            "id": response_result["id"],
             "gitlabs": [
                 {
-                    "url": working_post_data_gitlabs["url"],
-                    "username": working_post_data_gitlabs["name"],
+                    "id": next(gitlab["id"] for gitlab in response_result["gitlabs"] if gitlab["url"] == self.mock_gitlab["url"]),
+                    "name": self.mock_gitlab["name"],
+                    "url": self.mock_gitlab["url"],
+                    "username": self.USERNAME,
                 },
             ],
         }

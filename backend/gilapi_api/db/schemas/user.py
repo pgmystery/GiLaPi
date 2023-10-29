@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Optional
 from pydantic import BaseModel, HttpUrl, conlist
 
@@ -13,10 +14,15 @@ class User(BaseModel):
     gitlabs: conlist(UserGitlab, min_length=1)
 
 
-class UserGitlabResponse(BaseModel):
+@dataclass
+class UserGitlabResponse:
+    id: str
     url: HttpUrl
+    name: str
     username: str
 
 
-class UserResponse(BaseModel):
+@dataclass
+class UserResponse:
+    id: str
     gitlabs: conlist(UserGitlabResponse, min_length=1)
