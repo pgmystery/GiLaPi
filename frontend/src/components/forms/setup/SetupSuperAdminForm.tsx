@@ -147,6 +147,12 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
 
   function getFormComponent() {
     if (isLoggedIn) {
+      if (data.gitlab === undefined) {
+        dispatch({
+          type: LoginState.LOGOUT,
+        })
+      }
+
       return (
         <>
           <Box>

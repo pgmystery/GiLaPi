@@ -15,6 +15,7 @@ export interface AuthAction {
 }
 
 export interface AuthState {
+  apiURL: string
   gitlabURI?: string
   isLoggedIn: boolean
   user: AuthUser | null
@@ -44,6 +45,7 @@ interface AuthError {
 export const authInitialState: AuthState = {
   isLoggedIn: localStorage.getItem("isLoggedIn") === 'true',
   user: JSON.parse(localStorage.getItem("user") || '{}') || null,
+  apiURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
   gitlabURI: import.meta.env.VITE_GITLAB_URL,
   clientId: import.meta.env.VITE_GITLAB_OAUTH_CLIENT_ID,
   redirectURI: import.meta.env.VITE_GITLAB_OAUTH_REDIRECT_URI,

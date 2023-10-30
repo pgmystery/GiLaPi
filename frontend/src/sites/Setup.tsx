@@ -6,15 +6,14 @@ import {
   StepButton,
   Stepper,
   Stack,
-  Backdrop, CircularProgress,
 } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import SetupGitlabsForm, { GitlabsListData } from '../components/forms/setup/SetupGitlabsForm.tsx'
 import Button from '@mui/material/Button'
 import SetupSuperAdminForm, { GilapiAdmin } from '../components/forms/setup/SetupSuperAdminForm.tsx'
 import GilapiToolbar from '../components/toolbar/GilapiToolbar.tsx'
-import Typography from '@mui/material/Typography'
+import SetupFinish from '../components/forms/setup/SetupFinish.tsx'
 
 
 // STEPS:
@@ -23,7 +22,7 @@ import Typography from '@mui/material/Typography'
 //
 
 
-interface SetupData {
+export interface SetupData {
   0: GitlabsListData[],
   1: GilapiAdmin
 }
@@ -49,13 +48,6 @@ export default function Setup() {
   const [isStageReady, setIsStageReady] = useState<boolean>(false)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    if (setupState === Object.keys(setupData).length) {
-      console.log('FINISH SETUP')
-      console.log(setupData)
-    }
-  }, [setupData, setupState])
-
   function handleNextStageButtonClick() {
     setSetupState(Math.min(setupState + 1, setupStageLabels.length))
   }
@@ -70,30 +62,31 @@ export default function Setup() {
     })
   }
 
+  function handleFinishSetup(successfully: boolean) {
+    if (successfully) {
+      navigate('/login')
+    }
+    else {
+      // TODO?!
+    }
+  }
+
   function getSetupStageForm() {
     switch (setupState) {
       case 0:
-        return <SetupGitlabsForm data={setupData['0']} setData={data => setSetupData({
-          ...setupData,
-          0: data
-        })} setIsStageReady={setIsStageReady} />
+        return <SetupGitlabsForm data={setupData['0']} setData={data => {
+          setSetupData({
+            ...setupData,
+            0: data
+          })
+        }} setIsStageReady={setIsStageReady} />
       case 1:
         return <SetupSuperAdminForm data={setupData['1']} gitlabs={setupData['0']} setData={data => setSetupData({
           ...setupData,
           1: data
         })} setIsStageReady={setIsStageReady} />
       case 2:
-        return (
-          <Box>
-            <Typography variant="h4" align="center" gutterBottom>Finishing Setup...</Typography>
-            <Backdrop
-              sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-              open={true}
-            >
-              <CircularProgress color="inherit" />
-            </Backdrop>
-          </Box>
-        )
+        return <SetupFinish data={setupData} sendDataReady={setupState === Object.keys(setupData).length} onFinish={handleFinishSetup} />
       default:
         return <Navigate to="/login" replace />
     }

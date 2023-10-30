@@ -29,7 +29,7 @@ async def test_setup_post(mongo_client: MongoClientHelper):
 
     response = client.post("/setup", json=post_mock_data)
 
-    assert response.status_code == 200
+    assert response.status_code == 201
 
 
 @pytest.mark.asyncio
@@ -38,7 +38,7 @@ async def test_setup_post_skip_setup_already_finished(mongo_client: MongoClientH
 
     response = client.post("/setup", json=post_mock_data)
 
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     response2 = client.post("/setup", json=post_mock_data)
 
