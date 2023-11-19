@@ -1,18 +1,18 @@
-import GiLaPiClient from '../../libs/GilapiClient.ts'
+import GilapiClient from '../../libs/GilapiClient.ts'
 
 
 export interface LoaderLoginData {
-  gitlabs: string[]
+  isSetupFinish: boolean
 }
 
 
 export async function loginLoader(): Promise<LoaderLoginData> {
   console.log('RUN LOGIN-LOADER')
-  const gilapiClient = new GiLaPiClient()
+  const gilapiClient = new GilapiClient()
 
-  const gitlabs = await gilapiClient.get_gitlabs()
+  const isSetupFinish = await gilapiClient.check_setup()
 
   return {
-    gitlabs,
+    isSetupFinish,
   }
 }

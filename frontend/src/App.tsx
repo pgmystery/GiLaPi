@@ -26,6 +26,7 @@ function App() {
     {
       path: '/setup',
       element: <Setup />,
+      // loader: setupLoader,
     },
     {
       path: '/login',

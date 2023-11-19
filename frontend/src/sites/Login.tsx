@@ -21,7 +21,7 @@ interface LocationType {
 
 export default function Login() {
   const { state: authState, dispatch } = useContext(AuthContext)
-  const { gitlabs } = useLoaderData() as LoaderLoginData
+  const { isSetupFinish } = useLoaderData() as LoaderLoginData
   const [alertData, setAlertData] = useState<AlertDataType | null>(null)
   const [showAlert, setShowAlert] = useState<boolean>(false)
   const { state } = useLocation() as LocationType
@@ -36,7 +36,7 @@ export default function Login() {
     }
   }, [state])
 
-  if (gitlabs.length === 0) {
+  if (!isSetupFinish) {
     dispatch({
       type: LoginState.LOGOUT,
     })

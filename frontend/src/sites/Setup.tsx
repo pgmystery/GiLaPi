@@ -14,6 +14,8 @@ import Button from '@mui/material/Button'
 import SetupSuperAdminForm, { GilapiAdmin } from '../components/forms/setup/SetupSuperAdminForm.tsx'
 import GilapiToolbar from '../components/toolbar/GilapiToolbar.tsx'
 import SetupFinish from '../components/forms/setup/SetupFinish.tsx'
+import FormStepper, { FormStepperFormType } from '../components/forms/stepper/FormStepper.tsx'
+import FormStepperForm from '../components/forms/stepper/FormStepperForm.tsx'
 
 
 // STEPS:
@@ -22,39 +24,53 @@ import SetupFinish from '../components/forms/setup/SetupFinish.tsx'
 //
 
 
-export interface SetupData {
-  0: GitlabsListData[],
-  1: GilapiAdmin
-}
-
 export interface SetupStageFormProps<T> {
   data: T
   setData: React.Dispatch<T>
   setIsStageReady: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const setupStageLabels = [
-  'Add Gitlab environments',
-  'Set GiLaPi-Admin',
-]
+interface SetupFormData<T extends Array<unknown>> extends FormStepperFormType{
+  data: T[number]
+  setData: React.Dispatch<T[number]>
+}
 
+// interface SetupFormDatas {
+//   0: GitlabsListData[]
+//   1: GilapiAdmin
+// }
+
+type SetupFormDatas = [GitlabsListData[], GilapiAdmin]
+
+// type SetupFormDatas = [SetupFormData<GitlabsListData[]>, SetupFormData<GilapiAdmin>]
 
 export default function Setup() {
+  const [currentFormStage, setCurrentFormStage] = useState<number>(0)
+  const [forms, setForms] = useState<SetupFormData<SetupFormDatas>[]>([
+    {
+      label: 'Add Gitlab environments',
+      ready: false,
+      data: [],
+      setData: ()=>{},
+      getComponent: getSetupStageForm,
+    },
+    {
+      label: 'Set GiLaPi-Admin',
+      ready: false,
+      data: {},
+      setData: ()=>{},
+      getComponent: getSetupStageForm,
+    }
+  ])
+
   const [setupState, setSetupState] = useState<number>(0)
-  const [setupData, setSetupData] = useState<SetupData>({
-    0: [],
-    1: {},
-  })
-  const [isStageReady, setIsStageReady] = useState<boolean>(false)
+  const [formStepperData, setFormStepperData] = useState<FormStepperFormType[]>()
+  // const [setupData, setSetupData] = useState<SetupData>({
+  //   0: [],
+  //   1: {},
+  // })
+  // const [isStageReady, setIsStageReady] = useState<boolean>(false)
   const navigate = useNavigate()
-
-  function handleNextStageButtonClick() {
-    setSetupState(Math.min(setupState + 1, setupStageLabels.length))
-  }
-
-  function handleBackStageButtonClick() {
-    setSetupState(Math.max(setupState - 1, 0))
-  }
 
   function handleLogoClick() {
     navigate('/', {
@@ -71,10 +87,15 @@ export default function Setup() {
     }
   }
 
-  function getSetupStageForm() {
-    switch (setupState) {
+  function setFormData<T>(stage: number, data: T) {
+    forms[stage].data = data
+    setForms(forms)
+  }
+
+  function getSetupStageForm(stage: number) {
+    switch (stage) {
       case 0:
-        return <SetupGitlabsForm data={setupData['0']} setData={data => {
+        return <SetupGitlabsForm data={forms[0].data} setData={data => {
           setSetupData({
             ...setupData,
             0: data
@@ -92,6 +113,10 @@ export default function Setup() {
     }
   }
 
+  function onFormStepperChange(stage: number) {
+    setCurrentFormStage(stage)
+  }
+
   return (
     <>
       <GilapiToolbar onLogoClick={handleLogoClick} addToolbarSpace />
@@ -99,35 +124,15 @@ export default function Setup() {
         <Paper sx={{
           padding: '20px',
         }}>
-          <Stack spacing={2 }>
-            <Box>
-              { getSetupStageForm() }
-            </Box>
-            <Box>
-              <Stepper activeStep={setupState} alternativeLabel>
-                {setupStageLabels.map((label, index) => (
-                  <Step key={label}>
-                    <StepButton color="inherit" onClick={() => setSetupState(index)} sx={{
-                      padding: 0,
-                      paddingTop: '5px',
-                      margin: 0,
-                      marginTop: '-5px',
-                      marginBottom: 0,
-                    }}>
-                      {label}
-                    </StepButton>
-                  </Step>
-                ))}
-              </Stepper>
-            </Box>
-            <Box sx={{
-              display: 'flex'
-            }}>
-              <Button variant="contained" disabled={setupState <= 0} onClick={handleBackStageButtonClick}>Back</Button>
-              <Box sx={{flexGrow: 1}}></Box>
-              <Button variant="contained" disabled={!isStageReady} onClick={handleNextStageButtonClick}>Next</Button>
-            </Box>
-          </Stack>
+          <FormStepper activeStage={currentFormStage} onChange={onFormStepperChange}>
+            {/*{ getSetupStageForm() }*/}
+            <FormStepperForm>
+              <SetupGitlabsForm data={forms[0].data} onDataSubmit={} />
+            </FormStepperForm>
+            <FormStepperForm>
+              <SetupGitlabsForm data={forms[0].data} onDataSubmit={} />
+            </FormStepperForm>
+          </FormStepper>
         </Paper>
       </Container>
     </>

@@ -21,10 +21,13 @@ export default class GilapiClient {
     this.abortController = this.newAbortController()
   }
 
-  async get_gitlabs(): Promise<string[]> {
-    return new Promise((resolve) => {
-      resolve([])
-    })
+  async check_setup() {
+    const urlPath = '/setup'
+
+    const response = await this.get(urlPath)
+    const responseText = await response.text()
+
+    return responseText === 'true'
   }
 
   async sendSetup(data: SetupFinishData) {
@@ -44,6 +47,15 @@ export default class GilapiClient {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
+      signal: this.abortController.signal,
+    })
+
+    return response
+  }
+
+  private async get(url: string) {
+    const response = await fetch(this.apiURL + url, {
+      method: 'GET',
       signal: this.abortController.signal,
     })
 

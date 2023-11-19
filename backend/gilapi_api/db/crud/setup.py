@@ -25,6 +25,11 @@ class Setup(CRUDModel, ABC):
             user=UserCRUD(mongo_client=mongo_client),
         )
 
+    async def read(self) -> bool:
+        gitlabs_db = await self.crud.gitlab.read_all()
+
+        return len(gitlabs_db) > 0
+
     async def create(self, setup_data: SetupSchema):
         user_gitlabs: list[UserGitlabSchema] = []
 

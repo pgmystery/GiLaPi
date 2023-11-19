@@ -1,10 +1,10 @@
 from fastapi import Depends, HTTPException
 
-from gilapi_api.db import crud
+from gilapi_api.db.crud.setup import Setup as SetupCRUD
 
 
-async def verify_setup(crud_gitlab: crud.gitlab.Gitlab = Depends(crud.gitlab.Gitlab)):
-    gitlabs = await crud_gitlab.read_all()
+async def verify_setup(crud_setup: SetupCRUD = Depends(SetupCRUD)):
+    is_setup_finish = await crud_setup.read()
 
-    if len(gitlabs) > 0:
+    if is_setup_finish:
         raise HTTPException(status_code=404)
