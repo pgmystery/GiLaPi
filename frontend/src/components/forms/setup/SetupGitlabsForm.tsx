@@ -16,14 +16,14 @@ export interface GitlabsListData {
 }
 
 
-export default function SetupGitlabsForm({ data, setData, setIsStageReady }: SetupStageFormProps<GitlabsListData[]>) {
+export default function SetupGitlabsForm({ data, onSubmit, onReadyChanged }: SetupStageFormProps<GitlabsListData[]>) {
   const [nameFieldText, setNameFieldText] = useState<string>('')
   const [urlFieldText, setUrlFieldText] = useState<string>('')
   const [gilapiUrlFieldText, setGilapiUrlFieldText] = useState<string>(window.location.origin)
 
   useEffect(() => {
-    setIsStageReady(data.length > 0)
-  }, [data, setIsStageReady])
+    onReadyChanged(data.length > 0)
+  }, [data, onReadyChanged])
 
   function addItemToList(event: FormEvent) {
     event.preventDefault()
@@ -38,7 +38,7 @@ export default function SetupGitlabsForm({ data, setData, setIsStageReady }: Set
 
     if (isAlreadyInList) return
 
-    setData([
+    onSubmit([
       ...data,
       {
         name: nameFieldText,
@@ -57,7 +57,7 @@ export default function SetupGitlabsForm({ data, setData, setIsStageReady }: Set
       return name === item.name || url === item.url
     })
 
-    setData([
+    onSubmit([
       ...data.slice(0, itemToDeleteIndex),
       ...data.slice(itemToDeleteIndex + 1)
     ])

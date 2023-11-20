@@ -1,13 +1,13 @@
 import { Box, Stack, Step, StepButton, Stepper } from '@mui/material'
 import Button from '@mui/material/Button'
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 
 
 interface FormStepperProps {
   children: ReactNode
   activeStage: number
-  onNext?: (stage: number)=>void
-  onBack?: (stage: number)=>void
+  isStageReady: boolean
+  onSubmit?: ()=>ReactNode
   onChange?: (stage: number)=>void
 }
 
@@ -17,71 +17,77 @@ export interface FormStepperFormType {
   getComponent: (stage: number)=>ReactNode
 }
 
-export default function FormStepper({ children, activeStage, onNext, onBack, onChange }: FormStepperProps) {
-  // const [index, setIndex] = useState<number>(0)
-
-  useEffect(() => {
-    if (onChange !== undefined) {
-      onChange(index)
+export default function FormStepper({ children, activeStage, onChange, isStageReady }: FormStepperProps) {
+  const [onSubmittingComponent, setOnSubmittingComponent] = useState<ReactNode>(null)
+  const numberOfSteps = useMemo(() => {
+    if (children && Array.isArray(children)) {
+      return children.length
     }
-  }, [index, onChange])
+
+    return 0
+  }, [children])
 
   function handleNextClick() {
-    setIndex(Math.min(index + 1, forms.length))
-    if (onNext) onNext(index)
+    onChange && onChange(Math.min(activeStage + 1, numberOfSteps))
   }
 
   function handleBackClick() {
-    setIndex(Math.max(index - 1, 0))
-    if (onBack) onBack(index)
+    onChange && onChange(Math.max(activeStage - 1, 0))
   }
 
-  function handleSpecificStateClick(stage: number) {
-    setIndex(stage)
+  function handleSpecificStageClick(stage: number) {
+    onChange && onChange(stage)
   }
 
   function getNextButton() {
     let nextButtonText = 'Next'
 
-    if (index === forms.length - 1) {
+    if (activeStage === numberOfSteps - 1) {
       nextButtonText = 'Finish'
     }
-    else if (index === forms.length) {
+    else if (activeStage === numberOfSteps) {
       nextButtonText = 'Retry'
     }
 
-    return <Button variant="contained" disabled={!forms[index].ready} onClick={handleNextClick}>{ nextButtonText }</Button>
+    return <Button variant="contained" disabled={!isStageReady} onClick={handleNextClick}>{ nextButtonText }</Button>
   }
 
   return (
-    <Stack spacing={2 }>
-      <Box>
-        { children }
-      </Box>
-      <Box>
-        <Stepper activeStep={index} alternativeLabel>
-          {forms.map((form, index) => (
-            <Step key={form.label}>
-              <StepButton color="inherit" onClick={() => handleSpecificStateClick(index)} sx={{
-                padding: 0,
-                paddingTop: '5px',
-                margin: 0,
-                marginTop: '-5px',
-                marginBottom: 0,
-              }}>
-                {form.label}
-              </StepButton>
-            </Step>
-          ))}
-        </Stepper>
-      </Box>
-      <Box sx={{
-        display: 'flex'
-      }}>
-        <Button variant="contained" disabled={index <= 0} onClick={handleBackClick}>Back</Button>
-        <Box sx={{flexGrow: 1}}></Box>
-        { getNextButton() }
-      </Box>
-    </Stack>
+    onSubmittingComponent
+      ? onSubmittingComponent
+      : <Stack spacing={2}>
+          <Box>
+            { children }
+          </Box>
+          <Box>
+            <Stepper activeStep={activeStage} alternativeLabel>
+              {children && Array.isArray(children) && children.map((child: React.ReactNode) => {
+                console.log(child)
+
+                return child
+              })}
+              {/*{forms.map((form, index) => (*/}
+              {/*  <Step key={form.label}>*/}
+              {/*    <StepButton color="inherit" onClick={() => handleSpecificStateClick(index)} sx={{*/}
+              {/*      padding: 0,*/}
+              {/*      paddingTop: '5px',*/}
+              {/*      margin: 0,*/}
+              {/*      marginTop: '-5px',*/}
+              {/*      marginBottom: 0,*/}
+              {/*    }}>*/}
+              {/*      {form.label}*/}
+              {/*    </StepButton>*/}
+              {/*  </Step>*/}
+              {/*))}*/}
+            </Stepper>
+          </Box>
+          <Box sx={{
+            display: 'flex'
+          }}>
+            <Button variant="contained" disabled={activeStage <= 0} onClick={handleBackClick}>Back</Button>
+            <Box sx={{flexGrow: 1}}></Box>
+            { getNextButton() }
+          </Box>
+        </Stack>
   )
 }

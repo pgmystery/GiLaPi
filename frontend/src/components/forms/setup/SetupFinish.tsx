@@ -3,12 +3,11 @@ import { Backdrop, Box, CircularProgress } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import AlertCollapse from '../../alert/AlertCollapse.tsx'
 import GilapiClient, { SetupFinishData, SetupFinishGitlabsData } from '../../../libs/GilapiClient.ts'
-import { SetupData } from '../../../sites/Setup.tsx'
+import { SetupSubmitData } from '../../../sites/Setup.tsx'
 
 
 interface SetupFinishProps {
-  data: SetupData
-  sendDataReady: boolean
+  data: SetupSubmitData
   onFinish: (successfully: boolean)=>void
 }
 
@@ -17,67 +16,65 @@ interface Error {
   message: string
 }
 
-export default function SetupFinish({ data, sendDataReady, onFinish }: SetupFinishProps) {
-  const [isSendingData, setIsSendingData] = useState<boolean>(sendDataReady)
+export default function SetupFinish({ data, onFinish }: SetupFinishProps) {
+  const [isSendingData, setIsSendingData] = useState<boolean>(true)
   const [finishSetupError, setFinishSetupError] = useState<Error | null>(null)
 
   useEffect(() => {
-    if (sendDataReady) {
-      const { 0: gitlabsData, 1: gilapiAdmin } = data
+    const { gitlabs: gitlabsData, admin: gilapiAdmin } = data
 
-      const setupDataFinal: SetupFinishData = {
-        gitlabs: gitlabsData.map<SetupFinishGitlabsData>(gitlab => {
-          const { name, url, gilapiUrl } = gitlab
+    const setupDataFinal: SetupFinishData = {
+      gitlabs: gitlabsData.map<SetupFinishGitlabsData>(gitlab => {
+        const { name, url, gilapiUrl } = gitlab
 
-          const data: SetupFinishGitlabsData = {
-            name,
-            url,
-            redirect_url: gilapiUrl,
+        const data: SetupFinishGitlabsData = {
+          name,
+          url,
+          redirect_url: gilapiUrl,
+        }
+
+        if (name === gilapiAdmin.gitlab.name && url === gilapiAdmin.gitlab.url) {
+          data.admin = {
+            name: gilapiAdmin.username,
+            client_id: gilapiAdmin.clientId,
           }
+        }
 
-          if (name === gilapiAdmin.gitlab.name && url === gilapiAdmin.gitlab.url) {
-            data.admin = {
-              name: gilapiAdmin.username,
-              client_id: gilapiAdmin.clientId,
-            }
-          }
-
-          return data
-        })
-      }
-
-      const gilapiClient = new GilapiClient()
-      gilapiClient.sendSetup(setupDataFinal)
-        .then(() => onFinish(true))
-        .catch(e => {
-          console.log('ERROR')
-          console.log(e)
-
-          if (e instanceof DOMException) {
-            setFinishSetupError({
-              title: e.name,
-              message: e.message,
-            })
-          }
-          else if (e instanceof Error) {
-            setFinishSetupError({
-              title: "Error",
-              message: e.message,
-            })
-          }
-          else {
-            setFinishSetupError({
-              title: "Error",
-              message: "Unknown Error",
-            })
-          }
-          setIsSendingData(false)
-          onFinish(false)
-        })
-
-      return () => gilapiClient.abortController.abort()
+        return data
+      })
     }
-  }, [data, onFinish, sendDataReady])
+
+    const gilapiClient = new GilapiClient()
+    gilapiClient.sendSetup(setupDataFinal)
+                .then(() => onFinish(true))
+                .catch(e => {
+                  console.log('ERROR')
+                  console.log(e)
+
+                  if (e instanceof DOMException) {
+                    setFinishSetupError({
+                      title: e.name,
+                      message: e.message,
+                    })
+                  }
+                  else if (e instanceof Error) {
+                    setFinishSetupError({
+                      title: "Error",
+                      message: e.message,
+                    })
+                  }
+                  else {
+                    setFinishSetupError({
+                      title: "Error",
+                      message: "Unknown Error",
+                    })
+                  }
+                  setIsSendingData(false)
+                  onFinish(false)
+                })
+
+    return () => gilapiClient.abortController.abort()
+  }, [data, onFinish])
 
   return (
     <>

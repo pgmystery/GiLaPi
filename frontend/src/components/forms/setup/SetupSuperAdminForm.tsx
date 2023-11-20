@@ -38,7 +38,7 @@ interface LoginAlert {
 const gitlabFetcher = new GitlabFetcher('')
 
 
-export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gitlabs }: SetupSuperAdminForm) {
+export default function SetupSuperAdminForm({ data, onSubmit, onReadyChanged, gitlabs }: SetupSuperAdminForm) {
   const {state: authState, dispatch} = useContext(AuthContext)
   const { isLoggedIn: initIsLoggedIn, user } = authState
   const [selectedGitlab, setSelectedGitlab] = useState<SelectedGitlab | null>({
@@ -78,15 +78,15 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
       const dataGitlabStillInGitlabs = gitlabs.some(gitlab => gitlab.name === data.gitlab.name && gitlab.url === data.gitlab.url)
 
       if (!dataGitlabStillInGitlabs) {
-        setIsStageReady(false)
+        onReadyChanged(false)
         setIsLoggedIn(false)
-        setData({})
+        onSubmit({})
         dispatch({
           type: LoginState.LOGOUT,
         })
       }
     }
-  }, [gitlabs, data, setIsStageReady, setData, dispatch])
+  }, [gitlabs, data, onReadyChanged, onSubmit, dispatch])
 
   function handleLogin(loginSuccessed: boolean) {
     if (loginSuccessed) {
@@ -95,7 +95,7 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
       })
 
       if (selectedGitlab && user) {
-        setData({
+        onSubmit({
           clientId: gitlabClientId,
           gitlab: selectedGitlab.gitlab,
           username: user.username,
@@ -107,7 +107,7 @@ export default function SetupSuperAdminForm({ data, setData, setIsStageReady, gi
           message: 'Login was successfully',
         })
 
-        setIsStageReady(true)
+        onReadyChanged(true)
       }
     }
     else {
