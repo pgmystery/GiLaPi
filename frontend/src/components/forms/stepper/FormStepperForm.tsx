@@ -1,4 +1,4 @@
-interface FormStepperFormProps {
+export interface FormStepperFormProps {
   children?: React.ReactNode
   activeStage: number
   index: number

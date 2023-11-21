@@ -146,11 +146,15 @@ export default function SetupSuperAdminForm({ data, onSubmit, onReadyChanged, gi
   }
 
   function getFormComponent() {
+    console.log('getFormComponent')
+    console.log(isLoggedIn)
     if (isLoggedIn) {
+      console.log(data.gitlab)
       if (data.gitlab === undefined) {
         dispatch({
           type: LoginState.LOGOUT,
         })
+        console.log('DISPATCH DONE!')
       }
 
       return (

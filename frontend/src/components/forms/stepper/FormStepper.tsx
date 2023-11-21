@@ -1,10 +1,12 @@
 import { Box, Stack, Step, StepButton, Stepper } from '@mui/material'
 import Button from '@mui/material/Button'
-import { ReactNode, useMemo, useState } from 'react'
+import { ReactElement, ReactNode, useMemo, useState } from 'react'
+import FormStepperForm, { FormStepperFormProps } from './FormStepperForm.tsx'
 
+type FormStepperFormElement = ReactElement<FormStepperFormProps, typeof FormStepperForm>
 
 interface FormStepperProps {
-  children: ReactNode
+  children: FormStepperFormElement | FormStepperFormElement[]
   activeStage: number
   isStageReady: boolean
   onSubmit?: ()=>ReactNode
@@ -17,7 +19,7 @@ export interface FormStepperFormType {
   getComponent: (stage: number)=>ReactNode
 }
 
-export default function FormStepper({ children, activeStage, onChange, isStageReady }: FormStepperProps) {
+export default function FormStepper({ children, activeStage, onChange, isStageReady, onSubmit }: FormStepperProps) {
   const [onSubmittingComponent, setOnSubmittingComponent] = useState<ReactNode>(null)
   const numberOfSteps = useMemo(() => {
     if (children && Array.isArray(children)) {
@@ -28,7 +30,16 @@ export default function FormStepper({ children, activeStage, onChange, isStageRe
   }, [children])
 
   function handleNextClick() {
-    onChange && onChange(Math.min(activeStage + 1, numberOfSteps))
+    if (activeStage < numberOfSteps - 1) {
+      onChange && onChange(Math.min(activeStage + 1, numberOfSteps))
+    }
+    else {
+      if (onSubmit) {
+        const onSubmittingComponent = onSubmit()
+
+        setOnSubmittingComponent(onSubmittingComponent)
+      }
+    }
   }
 
   function handleBackClick() {
@@ -61,24 +72,27 @@ export default function FormStepper({ children, activeStage, onChange, isStageRe
           </Box>
           <Box>
             <Stepper activeStep={activeStage} alternativeLabel>
-              {children && Array.isArray(children) && children.map((child: React.ReactNode) => {
-                console.log(child)
+              {children && Array.isArray(children) && children.map(child => {
+                if (!child || child.type !== FormStepperForm) {
+                  return
+                }
 
-                return child
+                const { label, index } = child.props
+
+                return (
+                  <Step key={index}>
+                    <StepButton color="inherit" onClick={() => handleSpecificStageClick(index)} sx={{
+                      padding: 0,
+                      paddingTop: '5px',
+                      margin: 0,
+                      marginTop: '-5px',
+                      marginBottom: 0,
+                    }}>
+                      {label}
+                    </StepButton>
+                  </Step>
+                )
               })}
-              {/*{forms.map((form, index) => (*/}
-              {/*  <Step key={form.label}>*/}
-              {/*    <StepButton color="inherit" onClick={() => handleSpecificStateClick(index)} sx={{*/}
-              {/*      padding: 0,*/}
-              {/*      paddingTop: '5px',*/}
-              {/*      margin: 0,*/}
-              {/*      marginTop: '-5px',*/}
-              {/*      marginBottom: 0,*/}
-              {/*    }}>*/}
-              {/*      {form.label}*/}
-              {/*    </StepButton>*/}
-              {/*  </Step>*/}
-              {/*))}*/}
             </Stepper>
           </Box>
           <Box sx={{
