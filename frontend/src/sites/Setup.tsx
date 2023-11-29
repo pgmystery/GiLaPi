@@ -64,6 +64,7 @@ export default function Setup() {
   }
 
   function onFormStepperChange(stage: number) {
+    setIsCurrentStageReady(false)
     setCurrentFormStage(stage)
   }
 
